@@ -1,5 +1,6 @@
 #include <iostream>
-#include <boost/foreach.hpp>
+#include <vector>  
+#include <algorithm>  
 #include <boost/program_options.hpp>
 
 using namespace std;
@@ -21,9 +22,8 @@ int print_vm(const options_description &opts, const variables_map &vm)
 
     if (vm.count("dir")) {
         cout << "dir opt:";
-        BOOST_FOREACH(string str, vm["dir"].as<vector<string> >()) {
-            cout << str << ",";
-        }
+        vector<string> dirs = vm["dir"].as<vector<string>>();
+        for_each(dirs.begin(), dirs.end(), [](string d){ cout << d << endl; });
         cout << endl;
     }
 
