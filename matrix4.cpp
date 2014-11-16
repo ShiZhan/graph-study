@@ -43,9 +43,9 @@ int main (int argc, char* argv[]) {
         return -1;
     }
 
-    int motif_size  = 1 << scale;
-    int result_size = 1 << (scale * (depth + 1));
-    int motif_mask  = motif_size - 1;
+    unsigned motif_size  = 1 << scale;
+    unsigned result_size = 1 << (scale * (depth + 1));
+    unsigned motif_mask  = motif_size - 1;
 
     cout << result_size << endl;
 
