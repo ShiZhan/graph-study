@@ -1,5 +1,4 @@
 #include <iostream>
-#include <math.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/random.hpp>
@@ -11,23 +10,18 @@ using namespace boost::random;
 using namespace boost::program_options;
 
 int main (int argc, char* argv[]) {
-    int scale = 8, depth = 3;
+    int scale = 2, depth = 3;
 
     try {
         options_description opts("options");
         opts.add_options()
             ("help,h", "help message")
-            ("scale,S", value<int>()->implicit_value(8), "2^scale verticies")
-            ("depth,D", value<int>()->implicit_value(3), "depth < scale, the layers down to motif");
+            ("scale,S", value<int>()->implicit_value(2), "2^scale motif verticies")
+            ("depth,D", value<int>()->implicit_value(3), "recursive depth");
     
         variables_map vm;
         store(parse_command_line(argc, argv, opts), vm);
         notify(vm);
-
-        if (vm.size() == 0) {
-            cout << opts << endl;
-            return 0;
-        }
 
         if (vm.count("help")) {
             cout << opts << endl;
@@ -45,17 +39,12 @@ int main (int argc, char* argv[]) {
         }
     } catch(exception& e) {
         cout << e.what() << endl;
+        cout << "use '-h' to get help." << endl;
         return -1;
     }
 
-    if (scale <= depth) {
-        cout << "scale <= depth!" << endl;
-        return -1;
-    }
-
-    int motif_scale = scale - depth;
-    int result_size = pow(2, scale);
-    int motif_size  = pow(2, motif_scale);
+    int motif_size  = 1 << scale;
+    int result_size = 1 << (scale * (depth + 1));
     int motif_mask  = motif_size - 1;
 
     cout << result_size << endl;
@@ -67,7 +56,9 @@ int main (int argc, char* argv[]) {
 
     for (unsigned i = 0; i < motif_size; ++ i)
         for (unsigned j = 0; j < motif_size; ++ j)
-            motif(i, j) = binary(rng);
+            motif(i, j) = (j < i) ? binary(rng) : 0;
+
+    motif += trans(motif);
 
     cout << motif << endl;
 
@@ -76,8 +67,8 @@ int main (int argc, char* argv[]) {
         unsigned motif_i = i, motif_j = j;
         for (unsigned d = 0; d < depth + 1; ++ d) {
             cell *= motif(motif_i & motif_mask, motif_j & motif_mask);
-            motif_i >>= motif_scale;
-            motif_j >>= motif_scale;
+            motif_i >>= scale;
+            motif_j >>= scale;
         }
         return cell;
     };
