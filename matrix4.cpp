@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/random.hpp>
@@ -10,14 +11,14 @@ using namespace boost::random;
 using namespace boost::program_options;
 
 int main (int argc, char* argv[]) {
-    int scale = 2, depth = 3;
+    int scale = 2, depth = 2;
 
     try {
         options_description opts("options");
         opts.add_options()
             ("help,h", "help message")
             ("scale,S", value<int>()->implicit_value(2), "2^scale motif verticies")
-            ("depth,D", value<int>()->implicit_value(3), "recursive depth");
+            ("depth,D", value<int>()->implicit_value(2), "recursive depth");
     
         variables_map vm;
         store(parse_command_line(argc, argv, opts), vm);
@@ -28,15 +29,8 @@ int main (int argc, char* argv[]) {
             return 0;
         }
     
-        if (vm.count("scale")) {
-            scale = vm["scale"].as<int>();
-            cout << "scale opt: " << scale << endl;
-        }
-    
-        if (vm.count("depth")) {
-            depth = vm["depth"].as<int>();
-            cout << "depth opt: " << depth << endl;
-        }
+        if (vm.count("scale")) scale = vm["scale"].as<int>();
+        if (vm.count("depth")) depth = vm["depth"].as<int>();
     } catch(exception& e) {
         cout << e.what() << endl;
         cout << "use '-h' to get help." << endl;
@@ -49,7 +43,7 @@ int main (int argc, char* argv[]) {
 
     cout << result_size << endl;
 
-    boost::mt19937 rng;
+    boost::mt19937 rng(time(0));
     boost::uniform_int<> binary(0, 1);
 
     matrix<int> motif(motif_size, motif_size);
