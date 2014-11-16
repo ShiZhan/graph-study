@@ -71,17 +71,20 @@ int main (int argc, char* argv[]) {
 
     cout << motif << endl;
 
-    for (unsigned i = 0; i < result_size; ++ i ) {
-        for (unsigned j = 0; j < result_size; ++ j) {
-            int cell = 1;
-            int motif_i = i, motif_j = j;
-            for (unsigned d = 0; d < depth + 1; ++ d) {
-                cell *= motif(motif_i & motif_mask, motif_j & motif_mask);
-                motif_i >>= motif_scale;
-                motif_j >>= motif_scale;
-            }
-            cout << cell << ' ';
+    auto kronecker_cell = [=](unsigned i, unsigned j) {
+        int cell = 1;
+        unsigned motif_i = i, motif_j = j;
+        for (unsigned d = 0; d < depth + 1; ++ d) {
+            cell *= motif(motif_i & motif_mask, motif_j & motif_mask);
+            motif_i >>= motif_scale;
+            motif_j >>= motif_scale;
         }
+        return cell;
+    };
+
+    for (unsigned i = 0; i < result_size; ++ i ) {
+        for (unsigned j = 0; j < result_size; ++ j)
+           cout << kronecker_cell(i, j) << ' ';
         cout << endl;
     }
 
