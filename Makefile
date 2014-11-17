@@ -1,6 +1,6 @@
 CC = g++
 
-BOOST = c:/mingw64/x86_64-w64-boost/
+BOOST = c:/msys/_boost64/
 
 CXXFLAGS = --std=c++11 -I$(BOOST)include -L$(BOOST)lib -O3
 
@@ -31,5 +31,8 @@ thread: thread.cpp
 options: options.cpp
 	$(CC) options.cpp $(CXXFLAGS) -lboost_program_options-mgw48-mt-1_57 -o options
 
-cclean: rm -f *.exe
+matrix: matrix4.cpp
+	$(CC) matrix4.cpp $(CXXFLAGS) -lboost_program_options-mgw48-mt-1_57 -o matrix4
+
+ccclean: rm -f *.exe
 
