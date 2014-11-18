@@ -1,3 +1,6 @@
 *.exe
 graph-study.opensdf
 graph-study.sdf
+generator/Debug/*
+Debug/*
+
