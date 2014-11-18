@@ -1,8 +1,8 @@
 CC = g++
 
-BOOST = c:/msys/_boost64/
+BOOST = c:/boost-src/
 
-CXXFLAGS = --std=c++11 -I$(BOOST)include -L$(BOOST)lib -O3
+CXXFLAGS = --std=c++11 -I$(BOOST) -L$(BOOST)_mingw64/lib -O3
 
 all:
 	make graph thread options
