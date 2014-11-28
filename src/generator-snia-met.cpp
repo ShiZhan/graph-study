@@ -56,8 +56,7 @@ int main (int argc, char* argv[]) {
 					cout << e.what() << endl;
 				}
 				unsigned long long block_id = offset >> block_scale;
-				for (auto n: neighbours) cout << n << "-" << block_id << ", ";
-				cout << endl;
+				for (auto n: neighbours) cout << n << "\t" << block_id << endl;
 				neighbours.push_front(block_id);
 				if (neighbours.size() > diffuse_factor) neighbours.pop_back();
 			}
