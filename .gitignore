@@ -1,6 +1,6 @@
 *.exe
+graph-study.v11.suo
 graph-study.opensdf
 graph-study.sdf
-generator/Debug/*
+generator-snia-met/Debug/*
 Debug/*
-
