@@ -1,9 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <vector>
 #include <list>
 #include <string>
+
+#define MAX_TOKENS 255
 
 int main (int argc, char* argv[]) {
 	using namespace std;
@@ -31,27 +32,29 @@ int main (int argc, char* argv[]) {
 	if (!infile) return -1;
 
     string line;
-    vector<string> tokens;
+	string *tokens = new string[MAX_TOKENS];
 	list<unsigned long long> neighbours;
 	bool skip = true;
 	while (getline(infile, line)) {
 		stringstream splitter(line);
 		string token;
-		tokens.clear();
-        while(getline(splitter, token, ','))
-			tokens.push_back(token.erase(0, token.find_last_of(" \t") + 1));
+		int i = 0;
+		while(getline(splitter, token, ',')) {
+			tokens[i] = token.erase(0, token.find_last_of(" \t") + 1);
+			i++;
+		}
 
-		string op = tokens.at(0);
+		string op = tokens[0];
 		if (skip) {
 			if (op == "EndHeader") skip = false;
 		} else {
-			if ((op == "DiskRead" || op == "DiskWrite") && tokens.size() == 15) {
+			if (op == "DiskRead" || op == "DiskWrite") {
 				unsigned long long offset = 0;
 				unsigned long length = 0, disknum = 0;
 				try {
-					offset = stoull(tokens.at(5), nullptr, 16);
-					length = stoul(tokens.at(6), nullptr, 16);
-					disknum = stoul(tokens.at(8), nullptr, 10);
+					offset = stoull(tokens[5], nullptr, 16);
+					length = stoul(tokens[6], nullptr, 16);
+					disknum = stoul(tokens[8], nullptr, 10);
 				} catch(exception& e) {
 					cout << e.what() << endl;
 				}
