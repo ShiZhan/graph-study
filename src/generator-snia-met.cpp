@@ -8,20 +8,18 @@
 int main (int argc, char* argv[]) {
 	using namespace std;
 
-	unsigned short skip_lines = 73;
 	unsigned short diffuse_factor = 0;
 	unsigned short block_scale = 16;
 
-	if (argc < 4) {
-		cerr << "generator <skip lines> <diffuse factor> <block scale>" << endl;
+	if (argc < 3) {
+		cerr << "generator <diffuse factor> <block scale>" << endl;
 		return -1;
 	}
 
 	try {
 		size_t lastChar;
-		skip_lines = stoi(argv[1], &lastChar, 10);
-		diffuse_factor = stoi(argv[2], &lastChar, 10);
-		block_scale = stoi(argv[3], &lastChar, 10);
+		diffuse_factor = stoi(argv[1], &lastChar, 10);
+		block_scale = stoi(argv[2], &lastChar, 10);
 	} catch(exception& e) {
 		cout << e.what() << endl;
 		return -1;
@@ -40,24 +38,20 @@ int main (int argc, char* argv[]) {
 		}
 
 		string op = tokens[0];
-		if (skip_lines) {
-			skip_lines --;
-		} else {
-			if (op == "DiskRead" || op == "DiskWrite") {
-				unsigned long long offset = 0;
-				unsigned long length = 0, disknum = 0;
-				try {
-					offset = stoull(tokens[5], nullptr, 16);
-					length = stoul(tokens[6], nullptr, 16);
-					disknum = stoul(tokens[8], nullptr, 10);
-				} catch(exception& e) {
-					cout << e.what() << endl;
-				}
-				unsigned long long block_id = offset >> block_scale;
-				for (auto n: neighbours) cout << n << "\t" << block_id << endl;
-				neighbours.push_front(block_id);
-				if (neighbours.size() > diffuse_factor) neighbours.pop_back();
+		if (op == "DiskRead" || op == "DiskWrite") {
+			unsigned long long offset = 0;
+			unsigned long length = 0, disknum = 0;
+			try {
+				offset = stoull(tokens[5], nullptr, 16);
+				length = stoul(tokens[6], nullptr, 16);
+				disknum = stoul(tokens[8], nullptr, 10);
+			} catch(exception& e) {
+				cout << e.what() << endl;
 			}
+			unsigned long long block_id = offset >> block_scale;
+			for (auto n: neighbours) cout << n << "\t" << block_id << endl;
+			neighbours.push_front(block_id);
+			if (neighbours.size() > diffuse_factor) neighbours.pop_back();
 		}
 	}
 
