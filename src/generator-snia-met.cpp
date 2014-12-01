@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <list>
 #include <string>
@@ -9,18 +8,18 @@
 int main (int argc, char* argv[]) {
 	using namespace std;
 
+	unsigned short skip_lines = 73;
 	unsigned short diffuse_factor = 0;
 	unsigned short block_scale = 16;
-	string filename;
 
 	if (argc < 4) {
-		cerr << "generator <trace.csv> <diffuse factor> <block scale>" << endl;
+		cerr << "generator <skip lines> <diffuse factor> <block scale>" << endl;
 		return -1;
 	}
 
 	try {
-		filename = argv[1];
 		size_t lastChar;
+		skip_lines = stoi(argv[1], &lastChar, 10);
 		diffuse_factor = stoi(argv[2], &lastChar, 10);
 		block_scale = stoi(argv[3], &lastChar, 10);
 	} catch(exception& e) {
@@ -28,25 +27,21 @@ int main (int argc, char* argv[]) {
 		return -1;
 	}
 
-	ifstream infile(filename);
-	if (!infile) return -1;
-
     string line;
 	string *tokens = new string[MAX_TOKENS];
 	list<unsigned long long> neighbours;
-	bool skip = true;
-	while (getline(infile, line)) {
+	while (getline(cin, line)) {
 		stringstream splitter(line);
 		string token;
 		int i = 0;
 		while(getline(splitter, token, ',')) {
-			tokens[i] = token.erase(0, token.find_last_of(" \t") + 1);
-			i++;
+			tokens[i] = token.erase(0, token.find_first_not_of(" \t"));
+			if (i < MAX_TOKENS-1) i++;
 		}
 
 		string op = tokens[0];
-		if (skip) {
-			if (op == "EndHeader") skip = false;
+		if (skip_lines) {
+			skip_lines --;
 		} else {
 			if (op == "DiskRead" || op == "DiskWrite") {
 				unsigned long long offset = 0;
