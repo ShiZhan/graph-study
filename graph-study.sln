@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generator-snia-met", "generator-snia-met\generator-snia-met.vcxproj", "{BF990088-3468-4A76-B022-8D1507016725}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sequence-to-graph", "sequence-to-graph\sequence-to-graph.vcxproj", "{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BF990088-3468-4A76-B022-8D1507016725}.Debug|Win32.ActiveCfg = Debug|Win32
-		{BF990088-3468-4A76-B022-8D1507016725}.Debug|Win32.Build.0 = Debug|Win32
-		{BF990088-3468-4A76-B022-8D1507016725}.Release|Win32.ActiveCfg = Release|Win32
-		{BF990088-3468-4A76-B022-8D1507016725}.Release|Win32.Build.0 = Release|Win32
+		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Debug|Win32.Build.0 = Debug|Win32
+		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Release|Win32.ActiveCfg = Release|Win32
+		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
