@@ -1,23 +1,27 @@
-SNIA Trace to Graph
-===================
+Sequence to Graph
+=================
 
 How to use
 ----------
 
-1. read trace.csv, transform to edge list (diffuse=8, block=1MB), output to console.
+1. read sequence, transform to edge list (diffuse=8, aliment=1M), output to console.
 
-(Linux/UNIX Shell) cat trace.csv | generator 8 20
+(Linux/UNIX Shell) cat sequence | sequence-to-graph 8 20
 
-(Windows Console) type trace.csv | generator 8 20
+(Windows Console) type sequence | sequence-to-graph 8 20
 
-generator 8 20 < trace.csv
+sequence-to-graph 8 20 < sequence
 
-2. read trace.csv start from line 10, total 10000 lines, transform to edge list and sort the output
+2. read sequence start from line 10, total 10000 lines, transform to edge list and sort the output
 
-cat trace.csv | tail -n+10 | head -10000 | generator 8 20 | sort -n
+cat sequence | tail -n+10 | head -10000 | sequence-to-graph 8 20 | sort -n
 
-3. read trace.csv from gzipped trace.csv.gz, put output to trace.csv.edges
+3. read sample trace, pick DiskRead/DiskWrite lines, select LBA column and transform into edge list.
 
-gunzip -c trace.csv.gz | generator 8 20 > trace.csv.edges
+sed -e '/BeginHeader/,/EndHeader/d' data-sample/Exchange-Server-Traces-sample.csv | grep "Disk[Read|Write]" | awk -F',' '{print $6}' | sequence-to-graph.exe 8 20
+
+4. read trace.csv from gzipped trace.csv.gz, put output to trace.csv.edges
+
+gunzip -c trace.csv.gz | sed -e '/BeginHeader/,/EndHeader/d' | grep "Disk[Read|Write]" | awk -F',' '{print $6}' | sequence-to-graph.exe 8 20 > trace.csv.edges
 
 
