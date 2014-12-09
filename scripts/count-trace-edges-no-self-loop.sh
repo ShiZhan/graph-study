@@ -1,0 +1,1 @@
+gunzip -c $1 | sed -e '/BeginHeader/,/EndHeader/d' | grep "Disk[Read|Write]" | awk -F',' '{print $6}' | Debug/sequence-to-graph.exe $2 $3 | awk -F'\t' '{if ($1!=$2) {print $0}}' | sort -n | uniq -c | wc -l
