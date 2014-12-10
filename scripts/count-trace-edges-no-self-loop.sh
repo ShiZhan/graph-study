@@ -1,1 +1,1 @@
-gunzip -c $1 | sed -e '/BeginHeader/,/EndHeader/d' | awk 'BEGIN {FS=","} /^\ +Disk(Read|Write),/{print $6}' | Debug/sequence-to-graph.exe $2 $3 | awk '{if ($1!=$2) print $0}' | sort -n | uniq -c | wc -l
+gunzip -c $1 | sed '/BeginHeader/,/EndHeader/d;/^\s\+Disk[Read|Write]/!d' | awk 'BEGIN {FS=","} {print $6}' | Debug/sequence-to-graph.exe $2 $3 | awk '{if ($1!=$2) print $0}' | sort -n | uniq -c | wc -l
