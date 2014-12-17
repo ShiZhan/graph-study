@@ -29,14 +29,17 @@ int main (int argc, char* argv[]) {
 	list<Value> neighbours;
 	while (getline(cin, line)) {
 		try {
-			int base = (line.compare(0, 2, "0x"))?16:10;
+			int base = (line.compare(0, 2, "0x"))?16:10; // hex string check
 			value = stoull(line, nullptr, base);
 		} catch(exception& e) {
 			cerr << e.what() << endl;
 			value = 0;
 		}
+		// generate a vertex from current value within a certain range (2^alignment)
 		Value aligned = value >> alignment;
+		// edge: past n vertices to current vertex, assuming certain relationship
 		for (auto n: neighbours) cout << n << "\t" << aligned << endl;
+		// add current vertex to past n (<= diffuse) vertices
 		neighbours.push_front(aligned);
 		if (neighbours.size() > diffuse) neighbours.pop_back();
 	}
