@@ -35,13 +35,7 @@ int main (int argc, char* argv[]) {
 		try {
 			size_t lastChar;
 			while (getline(ss, s, ':')) sv.push_back(stoi(s, &lastChar, 10));
-			if (sv.size() == 4) {
-				int i = 0;
-				for(auto v:sv) {
-					seed[i] = v;
-					i++;
-				}
-			}
+			if (sv.size() == 4) for (int i = 0; i < 4; i++) seed[i] = sv[i];
 		} catch(exception& e) {
 			cerr << e.what() << endl;
 			return -1;
