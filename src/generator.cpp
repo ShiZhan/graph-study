@@ -45,21 +45,20 @@ int main (int argc, char* argv[]) {
 	srand((unsigned int)time(NULL));
 
 	unsigned long long V = 1 << v_factor; // 2^v_factor vertices
-	unsigned long long E = V * e_factor;  // 2^v_factor * e_factor (average degree) edges
+	unsigned long long E = V * e_factor;  // 2^v_factor * e_factor edges
 	int A = seed[0], B = A + seed[1], C = B + seed[2], D = C + seed[3];
-
+	// generate edge list
 	for (unsigned long long e = 0; e < E; e++) {
 		unsigned long long u = 0, v = 0;
 		for (unsigned short i = 0; i < v_factor; i++) {
-			int roll = rand() % D; // roll i times, 2^i vertices
-			unsigned long long u1 = u << 1, v1 = v << 1;
-			// A|B
-			// ---
-			// C|D
-			if (roll < A) {u = u1; v = v1;}
-			else if (roll < B) {u = u1 + 1; v = v1;}
-			else if (roll < C) {u = u1; v = v1 + 1;}
-			else {u = u1 + 1; v = v1 + 1;}
+			int roll = rand() % D; // roll dice
+			u <<= 1; v <<= 1;
+			// (0, 0) A | (0, 1) B
+			// -------------------
+			// (1, 0) C | (1, 1) D
+			if (roll >= C) { u += 1; v += 1; } // [C, D)
+			else if (roll >= B) u += 1;        // [B, C)
+			else if (roll >= A) v += 1;        // [A, B)
 		}
 	    cout << u << " " << v << endl;
 	}
