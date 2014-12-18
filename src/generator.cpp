@@ -3,44 +3,52 @@
 #include <string>
 #include <sstream>
 #include <time.h>
+#include "options.h"
 
 int main (int argc, char* argv[]) {
 	using namespace std;
+	using namespace opt;
 
 	// default values
-	unsigned short scale = 10;
-	unsigned short degree = 8;
+	unsigned short scale  = 10;
+	unsigned short degree = 16;
 	int seed[4] = {57, 19, 19, 5};
 
-	if (argc < 3) {
-		cerr << "generator <scale(" << scale << ")> <degree(" << degree
-			<< ")> [seed(" << seed[0] << ":" << seed[1] << ":" << seed[2] << ":" << seed[3] << ")]" << endl;
-		return -1;
+	if (chkOption(argv, argv + argc, "-h")) {
+		cout << "generator -s [scale] -d [degree] -m [seed matrix]" << endl;
+		cout << " -s (" << scale  << "):         2^scale vertices" << endl;
+		cout << " -d (" << degree << "):         average degree" << endl;
+		cout << " -m (" << seed[0] << ":" << seed[1] << ":" << seed[2] << ":" << seed[3] << "): seed matrix" << endl;
+		return 0;
 	}
 
-	// get vertex scale and average degree
-	try {
+	char* scale_str  = getOption(argv, argv + argc, "-s"); 
+	char* degree_str = getOption(argv, argv + argc, "-d"); 
+	char* seed_str   = getOption(argv, argv + argc, "-m"); 
+
+	// get vertex scale
+	if (scale_str) {
 		size_t lastChar;
-		scale = stoi(argv[1], &lastChar, 10);
-		degree = stoi(argv[2], &lastChar, 10);
-	} catch(exception& e) {
-		cerr << e.what() << endl;
-		return -1;
+		try { scale = stoi(scale_str, &lastChar, 10); }
+		catch(exception& e) { cerr << e.what() << endl; }
+	}
+
+	// get average degree
+	if (degree_str) {
+		size_t lastChar;
+		try { degree = stoi(degree_str, &lastChar, 10); }
+		catch(exception& e) { cerr << e.what() << endl; }
 	}
 
 	// get seed matrix (4 ranges)
-	if (argc > 3) {
-		istringstream ss(argv[3]);
+	if (seed_str) {
+		istringstream ss(seed_str);
 		string s;
 		vector<int> sv;
-		try {
-			size_t lastChar;
-			while (getline(ss, s, ':')) sv.push_back(stoi(s, &lastChar, 10));
-			if (sv.size() == 4) for (int i = 0; i < 4; i++) seed[i] = sv[i];
-		} catch(exception& e) {
-			cerr << e.what() << endl;
-			return -1;
-		}
+		size_t lastChar;
+		try { while (getline(ss, s, ':')) sv.push_back(stoi(s, &lastChar, 10)); }
+		catch(exception& e) { cerr << e.what() << endl; }
+		if (sv.size() == 4) for (int i = 0; i < 4; i++) seed[i] = sv[i];
 	}
 
 	srand((unsigned int)time(NULL));
