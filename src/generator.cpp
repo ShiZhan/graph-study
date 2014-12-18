@@ -7,15 +7,18 @@
 int main (int argc, char* argv[]) {
 	using namespace std;
 
+	// default values
+	unsigned short v_factor = 10;
+	unsigned short e_factor = 8;
+	int seed[4] = {57, 19, 19, 5};
+
 	if (argc < 3) {
-		cerr << "generator <vertex> <edge> [<seed(A:B:C:D)>]" << endl;
+		cerr << "generator <vertex(" << v_factor << ")> <edge(" << e_factor
+			<< ")> [seed(" << seed[0] << ":" << seed[1] << ":" << seed[2] << ":" << seed[3] << ")]" << endl;
 		return -1;
 	}
 
 	// get vertex scale and edge multiplier (average degree)
-	unsigned short v_factor = 10;
-	unsigned short e_factor = 8;
-
 	try {
 		size_t lastChar;
 		v_factor = stoi(argv[1], &lastChar, 10);
@@ -26,8 +29,6 @@ int main (int argc, char* argv[]) {
 	}
 
 	// get seed matrix (4 ranges)
-	int seed[4] = {57, 19, 19, 5};
-
 	if (argc > 3) {
 		istringstream ss(argv[3]);
 		string s;
@@ -56,9 +57,9 @@ int main (int argc, char* argv[]) {
 			// (0, 0) A | (0, 1) B
 			// -------------------
 			// (1, 0) C | (1, 1) D
-			if (roll >= C) { u += 1; v += 1; } // [C, D)
-			else if (roll >= B) u += 1;        // [B, C)
-			else if (roll >= A) v += 1;        // [A, B)
+			if (roll >= C) { u ++; v ++; } // [C, D)
+			else if (roll >= B) u ++;      // [B, C)
+			else if (roll >= A) v ++;      // [A, B)
 		}
 	    cout << u << " " << v << endl;
 	}
