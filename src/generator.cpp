@@ -16,9 +16,10 @@ int main (int argc, char* argv[]) {
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "generator -s [scale] -d [degree] -m [seed matrix]" << endl;
-		cout << " -s (" << scale  << "):         2^scale vertices" << endl;
-		cout << " -d (" << degree << "):         average degree" << endl;
-		cout << " -m (" << seed[0] << ":" << seed[1] << ":" << seed[2] << ":" << seed[3] << "): seed matrix" << endl;
+		cout << " -h:     \t ask for help" << endl;
+		cout << " -s (" << scale  << "):\t 2^scale vertices" << endl;
+		cout << " -d (" << degree << "):\t average degree" << endl;
+		cout << " -m (" << seed[0] << ":" << seed[1] << ":" << seed[2] << ":" << seed[3] << "):\t seed matrix" << endl;
 		return 0;
 	}
 

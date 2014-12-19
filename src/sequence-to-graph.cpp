@@ -14,9 +14,9 @@ int main (int argc, char* argv[]) {
 	if (chkOption(argv, argv + argc, "-h")) {
 		cerr << "generator <diffuse> <alignment>" << endl;
 		cout << "seq2graph -d [diffuse] -a [alignment]" << endl;
-		cout << " -h:         ask for help" << endl;
-		cout << " -d (" << diffuse   << "):      diffuse factor" << endl;
-		cout << " -a (" << alignment << "):      alignment factor" << endl;
+		cout << " -h:    \t ask for help" << endl;
+		cout << " -d (" << diffuse   << "):\t diffuse factor" << endl;
+		cout << " -a (" << alignment << "):\t alignment factor" << endl;
 		return 0;
 	}
 
