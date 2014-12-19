@@ -1,32 +1,46 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include "options.h"
 
 int main (int argc, char* argv[]) {
 	using namespace std;
+	using namespace opt;
 
-	typedef unsigned long long Value;
-
-	unsigned short diffuse = 0;
+	// default values
+	unsigned short diffuse = 8;
 	unsigned short alignment = 20;
 
-	if (argc < 3) {
+	if (chkOption(argv, argv + argc, "-h")) {
 		cerr << "generator <diffuse> <alignment>" << endl;
-		return -1;
+		cout << "seq2graph -d [diffuse] -a [alignment]" << endl;
+		cout << " -h:         ask for help" << endl;
+		cout << " -d (" << diffuse   << "):      diffuse factor" << endl;
+		cout << " -a (" << alignment << "):      alignment factor" << endl;
+		return 0;
 	}
 
-	try {
+	char* diffuse_str   = getOption(argv, argv + argc, "-d"); 
+	char* alignment_str = getOption(argv, argv + argc, "-a"); 
+
+	// get diffuse factor
+	if (diffuse_str) {
 		size_t lastChar;
-		diffuse = stoi(argv[1], &lastChar, 10);
-		alignment = stoi(argv[2], &lastChar, 10);
-	} catch(exception& e) {
-		cerr << e.what() << endl;
-		return -1;
+		try { diffuse = stoi(diffuse_str, &lastChar, 10); }
+		catch(exception& e) { cerr << e.what() << endl; }
 	}
 
+	// get alignment factor
+	if (alignment_str) {
+		size_t lastChar;
+		try { alignment = stoi(alignment_str, &lastChar, 10); }
+		catch(exception& e) { cerr << e.what() << endl; }
+	}
+
+	// read sequence, generate edges from history with given depth.
     string line;
-	Value value = 0;
-	list<Value> neighbours;
+	_ULonglong value = 0;
+	list<_ULonglong> neighbours;
 	while (getline(cin, line)) {
 		try {
 			int base = (line.compare(0, 2, "0x"))?16:10; // hex string check
@@ -36,7 +50,7 @@ int main (int argc, char* argv[]) {
 			value = 0;
 		}
 		// generate a vertex from current value within a certain range (2^alignment)
-		Value aligned = value >> alignment;
+		_ULonglong aligned = value >> alignment;
 		// edge: past n vertices to current vertex, assuming certain relationship
 		for (auto n: neighbours) cout << n << "\t" << aligned << endl;
 		// add current vertex to past n (<= diffuse) vertices
