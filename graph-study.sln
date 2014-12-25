@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sequence-to-graph", "sequen
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generator", "generator\generator.vcxproj", "{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sequential-edges-to-csr", "sequential-edges-to-csr\sequential-edges-to-csr.vcxproj", "{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Debug|Win32.Build.0 = Debug|Win32
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Release|Win32.ActiveCfg = Release|Win32
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Release|Win32.Build.0 = Release|Win32
+		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Debug|Win32.Build.0 = Debug|Win32
+		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Release|Win32.ActiveCfg = Release|Win32
+		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
