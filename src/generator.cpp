@@ -1,7 +1,5 @@
 #include <iostream>
-#include <vector>
 #include <string>
-#include <sstream>
 #include <time.h>
 #include "options.h"
 
@@ -43,13 +41,8 @@ int main (int argc, char* argv[]) {
 
 	// get seed matrix (4 ranges)
 	if (seed_str) {
-		istringstream ss(seed_str);
-		string s;
-		vector<int> sv;
-		size_t lastChar;
-		try { while (getline(ss, s, ':')) sv.push_back(stoi(s, &lastChar, 10)); }
+		try { sscanf_s(seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3); }
 		catch(exception& e) { cerr << e.what() << endl; }
-		if (sv.size() == 4) for (int i = 0; i < 4; i++) seed[i] = sv[i];
 	}
 
 	srand((unsigned int)time(NULL));
