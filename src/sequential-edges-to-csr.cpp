@@ -51,7 +51,7 @@ int main (int argc, char* argv[]) {
 	ci.close();
 	ri.close();
 
-	cout << "vertices (" << row_index_name << "): " << u << endl;
+	cout << "vertices (" << row_index_name << "): " << ++u << endl;
 	cout << "edges    (" << col_index_name << "): " << offset << endl;
 
 	return 0;
