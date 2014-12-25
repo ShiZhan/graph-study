@@ -6,6 +6,8 @@ int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
 
+	typedef unsigned long long ID;
+
 	// default values
 	unsigned short scale  = 10;
 	unsigned short degree = 16;
@@ -55,12 +57,11 @@ int main (int argc, char* argv[]) {
 
 	srand((unsigned int)time(NULL));
 
-	unsigned long long V = 1 << scale;      // 2^scale vertices
-	unsigned long long E = V * degree / 2;  // 2^scale * degree / 2 edges
+	ID E = (1 << scale) * degree / 2;  // 2^scale vertices * degree / 2 edges
 	int A = seed[0], B = A + seed[1], C = B + seed[2], D = C + seed[3];
 	// generate edge list
-	for (unsigned long long e = 0; e < E; e++) {
-		unsigned long long u = 0, v = 0;
+	for (ID e = 0; e < E; e++) {
+		ID u = 0, v = 0;
 		for (unsigned short i = 0; i < scale; i++) {
 			int roll = rand() % D; // roll dice
 			u <<= 1; v <<= 1;

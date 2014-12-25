@@ -7,7 +7,7 @@ int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
 
-	typedef unsigned long long Value;
+	typedef unsigned long long ID;
 
 	// default values
 	unsigned short diffuse = 8;
@@ -40,8 +40,8 @@ int main (int argc, char* argv[]) {
 
 	// read sequence, generate edges from history with given depth.
     string line;
-	Value value = 0;
-	list<Value> neighbours;
+	ID value = 0;
+	list<ID> neighbours;
 	while (getline(cin, line)) {
 		try {
 			int base = (line.compare(0, 2, "0x"))?16:10; // hex string check
@@ -51,7 +51,7 @@ int main (int argc, char* argv[]) {
 			value = 0;
 		}
 		// generate a vertex from current value within a certain range (2^alignment)
-		Value aligned = value >> alignment;
+		ID aligned = value >> alignment;
 		// edge: past n vertices to current vertex, assuming certain relationship
 		for (auto n: neighbours) cout << n << "\t" << aligned << endl;
 		// add current vertex to past n (<= diffuse) vertices
