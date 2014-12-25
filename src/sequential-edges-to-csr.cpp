@@ -32,6 +32,7 @@ int main (int argc, char* argv[]) {
 	// write v sequence to ci, count u run length and write to ri.
 	string line;
 	ID u = 0, v = 0, u_prev = 0, offset = 0;
+	ri.write((char *)&offset, sizeof(ID));
 	while (getline(cin, line)) {
 		sscanf_s(line.c_str(), "%llu %llu", &u, &v);
 		ci.write((char *)&v, sizeof(ID));
