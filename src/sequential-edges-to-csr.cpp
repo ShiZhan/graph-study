@@ -23,8 +23,8 @@ int main (int argc, char* argv[]) {
 
 	// get prefix
 	if (prefix_str) prefix = prefix_str;
-	string col_index_name = prefix + "_col.idx";
-	string row_index_name = prefix + "_row.idx";
+	string col_index_name = prefix + "-col.idx";
+	string row_index_name = prefix + "-row.idx";
 
 	// prepare output indices
 	ofstream ci(col_index_name, ios::binary), ri(row_index_name, ios::binary);
