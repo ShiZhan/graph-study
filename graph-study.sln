@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generator", "generator\gene
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sequential-edges-to-csr", "sequential-edges-to-csr\sequential-edges-to-csr.vcxproj", "{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "edge-sort", "edge-sort\edge-sort.vcxproj", "{833595B3-3034-4C70-B94E-D9776894A604}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,10 @@ Global
 		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Debug|Win32.Build.0 = Debug|Win32
 		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Release|Win32.ActiveCfg = Release|Win32
 		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Release|Win32.Build.0 = Release|Win32
+		{833595B3-3034-4C70-B94E-D9776894A604}.Debug|Win32.ActiveCfg = Debug|Win32
+		{833595B3-3034-4C70-B94E-D9776894A604}.Debug|Win32.Build.0 = Debug|Win32
+		{833595B3-3034-4C70-B94E-D9776894A604}.Release|Win32.ActiveCfg = Release|Win32
+		{833595B3-3034-4C70-B94E-D9776894A604}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
