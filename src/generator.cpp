@@ -2,47 +2,34 @@
 #include <time.h>
 #include "options.h"
 
+#define SCALE 8
+#define D_AVG 16
+
 int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
 
 	typedef unsigned long long ID;
 
-	// default values
-	unsigned short scale  = 10;
-	unsigned short degree = 16;
+	// default seed matrix
 	int seed[4] = {57, 19, 19, 5};
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "generator -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -s:\t (" << scale  << ") 2^scale vertices" << endl;
-		cout << " -d:\t (" << degree << ") average degree" << endl;
+		cout << " -s:\t (" << SCALE << ") 2^scale vertices" << endl;
+		cout << " -d:\t (" << D_AVG << ") average degree" << endl;
 		cout << " -m:\t (" << seed[0] << ":" << seed[1] << ":" << seed[2] << ":" << seed[3] << ") seed matrix" << endl;
 		cout << " -n:\t no loop edges" << endl;
 		cout << " -u:\t undirected" << endl;
 		return 0;
 	}
 
-	char* scale_str  = getOption(argv, argv + argc, "-s"); 
-	char* degree_str = getOption(argv, argv + argc, "-d"); 
-	char* seed_str   = getOption(argv, argv + argc, "-m"); 
-	bool  noloop     = chkOption(argv, argv + argc, "-n"); 
-	bool  undirected = chkOption(argv, argv + argc, "-u"); 
-
-	// get vertex scale
-	if (scale_str) {
-		size_t lastChar;
-		try { scale = stoi(scale_str, &lastChar, 10); }
-		catch(exception& e) { cerr << e.what() << endl; }
-	}
-
-	// get average degree
-	if (degree_str) {
-		size_t lastChar;
-		try { degree = stoi(degree_str, &lastChar, 10); }
-		catch(exception& e) { cerr << e.what() << endl; }
-	}
+	unsigned short scale  = getInt(argv, argv + argc, "-s", SCALE);
+	unsigned short degree = getInt(argv, argv + argc, "-d", D_AVG);
+	char* seed_str   = getOption(argv, argv + argc, "-m");
+	bool  noloop     = chkOption(argv, argv + argc, "-n");
+	bool  undirected = chkOption(argv, argv + argc, "-u");
 
 	// get seed matrix (4 ranges)
 	if (seed_str) {
