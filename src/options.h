@@ -12,8 +12,8 @@ namespace opt {
 		return std::find(begin, end, option) != end;
 	}
 
-	int getInt(char** begin, char** end, const std::string& option, int default) {
-		int value = default;
+	int getInt(char** begin, char** end, const std::string& option, int d) {
+		int value = d;
 		char* str = getOption(begin, end, option);
 		if (str) {
 			size_t lastChar;
