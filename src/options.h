@@ -17,8 +17,11 @@ namespace opt {
 		char* str = getOption(begin, end, option);
 		if (str) {
 			size_t lastChar;
-			try { value = std::stoi(str, &lastChar, 10); }
-			catch(std::exception& e) { std::cerr << e.what() << std::endl; }
+			try {
+				value = std::stoi(str, &lastChar, 10);
+			} catch(std::exception& e) {
+				std::cerr << e.what() << std::endl;
+			}
 		}
 		return value;
 	}
