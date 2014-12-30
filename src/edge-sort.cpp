@@ -6,23 +6,30 @@
 #include <sys/stat.h>
 #include "options.h"
 
-#define TMP_D "."
 #define CHUNK 25
+
+typedef unsigned long long ID;
 
 class Edge {
 public:
-	Edge(unsigned long long u, unsigned long long v): u(u), v(v) {}
-	unsigned long long u, v;
-    bool operator < (const Edge &e) const {
-		return (u == e.u) ? (v < e.v) : (u < e.u);
-    }
-    bool operator == (const Edge &e) const {
-		return (u == e.u) && (v == e.v);
-    }
+	ID n[2];
+	Edge(ID u, ID v) { n[0] = u; n[1] = v; }
+
+	bool operator < (const Edge &e) const {
+		return (n[0] == e.n[0]) ? (n[1] < e.n[1]) : (n[0] < e.n[0]);
+	}
+
+	bool operator == (const Edge &e) const {
+		return (n[0] == e.n[0]) && (n[1] == e.n[1]);
+	}
+
+	bool operator != (const Edge &e) const {
+		return (n[0] != e.n[0]) || (n[1] != e.n[1]);
+	}
 };
 
-std::ostream &operator<<(std::ostream &o, const std::list<Edge> edges) {
-	for (Edge e:edges) { o << e.u << " " << e.v << std::endl; }
+std::ostream &operator<<(std::ostream &o, const Edge e) {
+	o << e.n[0] << " " << e.n[1] << std::endl;
 	return o;
 }
 
@@ -30,38 +37,20 @@ int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
 
-	typedef unsigned long long ID;
-
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "edge-sort -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -t:\t (" << TMP_D << ") directory for temporary files" << endl;
 		cout << " -c:\t (" << CHUNK << ") sort [2^c] edges in memory" << endl;
 		return 0;
 	}
 
-	char* temp_dir_opt = getOption(argv, argv + argc, "-t");
-	string temp_dir = (temp_dir_opt)?temp_dir_opt:TMP_D;
 	unsigned long chunk = 1 << getInt(argv, argv + argc, "-c", CHUNK);
 
-	// check temp directory
-	struct stat st;
-	if(stat(temp_dir.c_str(), &st) == 0) {
-		if((st.st_mode & S_IFDIR) == 0) {
-			cerr << temp_dir << " not exist" << endl;
-			return -1;
-		}
-	} else {
-		cerr << "stat() error" << endl;
-		return -1;
-	}
-
-	// sort input line by line, then chunk by chunk
+	// sort input chunk by chunk
 	string line;
 	ID u, v, chunk_total = 0;
 	list<Edge> edges;
-	char file_name[255];
-	string file_name_fmt = temp_dir + "/%08x";
+	fstream temp_file("_sorted_chunks", ios::trunc|ios::in|ios::out|ios::binary);
 	while (getline(cin, line)) {
 #ifdef _MSC_VER
 		sscanf_s(line.c_str(), "%llu %llu", &u, &v);
@@ -71,37 +60,38 @@ int main (int argc, char* argv[]) {
 		edges.push_back(Edge(u, v));
 		if (edges.size() >= chunk) {
 			edges.sort();
-			edges.unique();
-#ifdef _MSC_VER
-			sprintf_s(file_name, file_name_fmt.c_str(), chunk_total);
-#else
-			sprintf(file_name, file_name_fmt.c_str(), chunk_total);
-#endif
-			ofstream chunk_file(file_name);
-			chunk_file << edges;
-			chunk_file.close();
+			for (Edge e: edges) temp_file.write((char*)e.n, sizeof(ID)*2);
 			chunk_total++;
 			edges.clear();
 		}
 	}
 
 	edges.sort();
-	edges.unique();
+
 	if (chunk_total) {
 		// final chunk
-#ifdef _MSC_VER
-		sprintf_s(file_name, file_name_fmt.c_str(), chunk_total);
-#else
-		sprintf(file_name, file_name_fmt.c_str(), chunk_total);
-#endif
-		ofstream chunk_file(file_name);
-		chunk_file << edges;
-		chunk_file.close();
+		for (Edge e: edges) temp_file.write((char*)e.n, sizeof(ID)*2);
+		// merge index (chunk_total way)
+		list<ID> chunk_index;
+		for (;chunk_total>0;chunk_total--) chunk_index.push_back(chunk);
+		chunk_index.push_back(edges.size());
 		// merge sort
+		for (ID i: chunk_index) cout << i << endl;
+		// clean up
+		chunk_index.clear();
 	} else {
-		cout << edges; // smaller than 1 chunk
+		// smaller than 1 chunk, output to cout directly.
+		Edge edge_previous(0, 0);
+		for (Edge e: edges) {
+			if (e != edge_previous) {
+				cout << e;
+				edge_previous = e;
+			}
+		}
 	}
+
 	edges.clear();
+	temp_file.close();
 
 	return 0;
 }
