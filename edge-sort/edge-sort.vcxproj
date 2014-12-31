@@ -65,6 +65,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\options.h" />
+    <ClInclude Include="..\src\types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\edge-sort.cpp" />

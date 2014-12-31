@@ -2,12 +2,11 @@
 #include <string>
 #include <fstream>
 #include "options.h"
+#include "types.h"
 
 int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
-
-	typedef unsigned long long ID;
 
 	// default values
 	string prefix = "csr";
@@ -31,22 +30,22 @@ int main (int argc, char* argv[]) {
 
 	// write v sequence to ci, count u run length and write to ri.
 	string line;
-	ID u = 0, v = 0, u_prev = 0, offset = 0;
-	ri.write((char *)&offset, sizeof(ID));
+	u64 u = 0, v = 0, u_prev = 0, offset = 0;
+	ri.write((char *)&offset, sizeof(u64));
 	while (getline(cin, line)) {
 #ifdef _MSC_VER
 		sscanf_s(line.c_str(), "%llu %llu", &u, &v);
 #else
 		sscanf(line.c_str(), "%llu %llu", &u, &v);
 #endif
-		ci.write((char *)&v, sizeof(ID));
+		ci.write((char *)&v, sizeof(u64));
 		if(u > u_prev) {
-			for (int i=0; i<(u-u_prev); i++) ri.write((char *)&offset, sizeof(ID));
+			for (int i=0; i<(u-u_prev); i++) ri.write((char *)&offset, sizeof(u64));
 			u_prev = u;
 		}
 		offset++;
 	}
-	ri.write((char *)&offset, sizeof(ID));
+	ri.write((char *)&offset, sizeof(u64));
 
 	ci.close();
 	ri.close();
