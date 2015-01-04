@@ -5,15 +5,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "options.h"
+#include "types.h"
 
-#define CHUNK_SCALE 25
-
-typedef unsigned long long u64;
+#define CHUNK_SCALE 25 // 2^25*16 Bytes = 512 M Bytes
+#define _TEMP_FILE_ "_sorted_chunks"
 
 class Edge {
 public:
 	u64 n[2];
-	Edge(u64 u, u64 v) { n[0] = u; n[1] = v; }
+	Edge() { n[0] = -1; n[1] = -1; }
+	Edge (u64 u, u64 v) { n[0] = u; n[1] = v; }
 
 	bool operator < (const Edge &e) const {
 		return (n[0] == e.n[0]) ? (n[1] < e.n[1]) : (n[0] < e.n[0]);
@@ -28,15 +29,26 @@ public:
 	}
 };
 
-class Chunk {
+class Chunk: public Edge {
 public:
-	Chunk (u64 start, u64 size): start(start), size(size) { offset = start; }
-	u64 current() { return offset; }
-	bool next() { return (offset++==start+size); }
+	Chunk (u64 start, u64 size, std::fstream &f):
+		start(start), size(size), f(f) {
+			offset = start; end = start + size;
+			next();
+	}
+
+	u64 next() {
+		if (offset == end) return 0;
+		else {
+			u64 address = offset << 4; // multiply by sizeof(u64)*2
+			f.seekg(address);
+			f.read((char*)n, sizeof(u64)*2);
+			return ++offset;
+		}
+	}
 private:
-	u64 start;
-	u64 size;
-	u64 offset;
+	u64 start, end, size, offset;
+	std::fstream &f;
 };
 
 std::ostream &operator<<(std::ostream &o, const Edge e) {
@@ -61,7 +73,7 @@ int main (int argc, char* argv[]) {
 	string line;
 	u64 u, v, chunk_total = 0;
 	list<Edge> edges;
-	fstream temp_file("_sorted_chunks", ios::trunc|ios::in|ios::out|ios::binary);
+	fstream temp_file(_TEMP_FILE_, ios::trunc|ios::in|ios::out|ios::binary);
 	while (getline(cin, line)) {
 #ifdef _MSC_VER
 		sscanf_s(line.c_str(), "%llu %llu", &u, &v);
@@ -82,18 +94,24 @@ int main (int argc, char* argv[]) {
 	if (chunk_total) {
 		// final chunk
 		for (Edge e: edges) temp_file.write((char*)e.n, sizeof(u64)*2);
-		// merge index (chunk_total way)
+		// prepare all [chunk_total] chunks merge indices
 		list<Chunk> chunks;
-		for (u64 i=0;i<chunk_total;i++) chunks.push_back(Chunk(i*chunk_size, chunk_size));
-		chunks.push_back(Chunk(chunk_total*chunk_size, edges.size()));
+		for (u64 i=0;i<chunk_total;i++)
+			chunks.push_back(Chunk(i*chunk_size, chunk_size, temp_file));
+		chunks.push_back(Chunk(chunk_total*chunk_size, edges.size(), temp_file));
 		// merge sort
-		Edge edge_previous(0, 0);
-		for (Chunk c: chunks) cout << c.current() << endl;
-		// clean up
-		chunks.clear();
+		Edge edge_previous;
+		while (chunks.size()>0) {
+			list<Chunk>::iterator min = min_element(chunks.begin(), chunks.end());
+			if (*min != edge_previous) {
+				cout << *min;
+				edge_previous = *min;
+			}
+			if ((*min).next()==0) chunks.erase(min);
+		}
 	} else {
 		// smaller than 1 chunk, output to cout directly.
-		Edge edge_previous(0, 0);
+		Edge edge_previous;
 		for (Edge e: edges) {
 			if (e != edge_previous) {
 				cout << e;
@@ -102,6 +120,7 @@ int main (int argc, char* argv[]) {
 		}
 	}
 
+	// clean up
 	edges.clear();
 	temp_file.close();
 
