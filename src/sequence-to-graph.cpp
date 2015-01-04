@@ -2,7 +2,7 @@
 #include <list>
 #include <string>
 #include "options.h"
-#include "types.h"
+#include "utils.h"
 
 #define DIFFUSE   8
 #define ALIGNMENT 20

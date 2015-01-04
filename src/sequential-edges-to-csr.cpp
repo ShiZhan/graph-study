@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include "options.h"
-#include "types.h"
+#include "utils.h"
 
 int main (int argc, char* argv[]) {
 	using namespace std;
@@ -33,11 +33,7 @@ int main (int argc, char* argv[]) {
 	u64 u = 0, v = 0, u_prev = 0, offset = 0;
 	ri.write((char *)&offset, sizeof(u64));
 	while (getline(cin, line)) {
-#ifdef _MSC_VER
-		sscanf_s(line.c_str(), "%llu %llu", &u, &v);
-#else
-		sscanf(line.c_str(), "%llu %llu", &u, &v);
-#endif
+		SSCANF((line.c_str(), "%llu %llu", &u, &v));
 		ci.write((char *)&v, sizeof(u64));
 		if(u > u_prev) {
 			for (int i=0; i<(u-u_prev); i++) ri.write((char *)&offset, sizeof(u64));

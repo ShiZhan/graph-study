@@ -18,7 +18,7 @@
     <ClInclude Include="..\src\options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\types.h">
+    <ClInclude Include="..\src\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

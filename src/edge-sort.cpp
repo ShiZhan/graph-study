@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "options.h"
-#include "types.h"
+#include "utils.h"
 
 #define CHUNK_SCALE 25 // 2^25*16 Bytes = 512 M Bytes
 #define _TEMP_FILE_ "_sorted_chunks"
@@ -63,44 +63,40 @@ int main (int argc, char* argv[]) {
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "edge-sort -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -c:\t (" << CHUNK_SCALE << ") sort [2^c] edges in memory" << endl;
+		cout << " -c:\t (" << CHUNK_SCALE << ") sort [2^c] edges per chunk" << endl;
 		return 0;
 	}
 
 	u64 chunk_size = 1 << getInt(argv, argv + argc, "-c", CHUNK_SCALE);
+	bool use_tempfile = chkOption(argv, argv + argc, "-c");
 
-	// sort input chunk by chunk
 	string line;
-	u64 u, v, chunk_total = 0;
+	u64 u, v;
 	list<Edge> edges;
-	fstream temp_file(_TEMP_FILE_, ios::trunc|ios::in|ios::out|ios::binary);
-	while (getline(cin, line)) {
-#ifdef _MSC_VER
-		sscanf_s(line.c_str(), "%llu %llu", &u, &v);
-#else
-		sscanf(line.c_str(), "%llu %llu", &u, &v);
-#endif
-		edges.push_back(Edge(u, v));
-		if (edges.size() >= chunk_size) {
-			edges.sort();
-			for (Edge e: edges) temp_file.write((char*)e.n, sizeof(u64)*2);
-			chunk_total++;
-			edges.clear();
+
+	if (use_tempfile) {
+		fstream temp_file(_TEMP_FILE_, ios::trunc|ios::in|ios::out|ios::binary);
+		u64 chunk_id = 0;
+
+		while (getline(cin, line)) {
+			SSCANF((line.c_str(), "%llu %llu", &u, &v));
+			edges.push_back(Edge(u, v));
+			if (edges.size() >= chunk_size) { // one more chunk
+				edges.sort();
+				for (Edge e: edges) temp_file.write((char*)e.n, sizeof(u64)*2);
+				chunk_id++;
+				edges.clear();
+			}
 		}
-	}
 
-	edges.sort();
-
-	if (chunk_total) {
-		// final chunk
+		edges.sort(); // final chunk
 		for (Edge e: edges) temp_file.write((char*)e.n, sizeof(u64)*2);
-		// prepare all [chunk_total] chunks merge indices
-		list<Chunk> chunks;
-		for (u64 i=0;i<chunk_total;i++)
-			chunks.push_back(Chunk(i*chunk_size, chunk_size, temp_file));
-		chunks.push_back(Chunk(chunk_total*chunk_size, edges.size(), temp_file));
-		// merge sort
-		Edge edge_previous;
+
+		list<Chunk> chunks; // all [chunk_total] chunks merge indices
+		for (u64 i=0;i<chunk_id;i++) chunks.push_back(Chunk(i*chunk_size, chunk_size, temp_file));
+		chunks.push_back(Chunk(chunk_id*chunk_size, edges.size(), temp_file));
+
+		Edge edge_previous; // merge sort
 		while (chunks.size()>0) {
 			list<Chunk>::iterator min = min_element(chunks.begin(), chunks.end());
 			if (*min != edge_previous) {
@@ -109,8 +105,14 @@ int main (int argc, char* argv[]) {
 			}
 			if ((*min).next()==0) chunks.erase(min);
 		}
+
+		temp_file.close();
 	} else {
-		// smaller than 1 chunk, output to cout directly.
+		while (getline(cin, line)) {
+			SSCANF((line.c_str(), "%llu %llu", &u, &v));
+			edges.push_back(Edge(u, v));
+		}
+		edges.sort();
 		Edge edge_previous;
 		for (Edge e: edges) {
 			if (e != edge_previous) {
@@ -120,9 +122,7 @@ int main (int argc, char* argv[]) {
 		}
 	}
 
-	// clean up
 	edges.clear();
-	temp_file.close();
 
 	return 0;
 }

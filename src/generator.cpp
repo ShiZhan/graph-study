@@ -1,7 +1,7 @@
 #include <iostream>
 #include <time.h>
 #include "options.h"
-#include "types.h"
+#include "utils.h"
 
 #define SCALE 8
 #define D_AVG 16
@@ -33,11 +33,7 @@ int main (int argc, char* argv[]) {
 	// get seed matrix (4 ranges)
 	if (seed_str) {
 		try {
-#ifdef _MSC_VER
-			sscanf_s(seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3);
-#else
-			sscanf(seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3);
-#endif
+			SSCANF((seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3));
 		} catch(exception& e) { cerr << e.what() << endl; }
 	}
 
