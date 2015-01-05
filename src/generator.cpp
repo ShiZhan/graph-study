@@ -10,8 +10,7 @@ int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
 
-	// default seed matrix
-	int seed[4] = {57, 19, 19, 5};
+	int seed[4] = {57, 19, 19, 5}; // default seed matrix
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "generator -flag [option]" << endl;
@@ -31,25 +30,18 @@ int main (int argc, char* argv[]) {
 	bool  undirected = chkOption(argv, argv + argc, "-u");
 
 	// get seed matrix (4 ranges)
-	if (seed_str) {
-		try {
-			SSCANF((seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3));
-		} catch(exception& e) { cerr << e.what() << endl; }
-	}
+	if (seed_str) SSCANF((seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3));
 
 	srand((u32)time(NULL));
 
 	u64 E = (1 << scale) * degree / 2;  // 2^scale vertices * degree / 2 edges
-	int A = seed[0], B = A + seed[1], C = B + seed[2], D = C + seed[3];
-	// generate edge list
-	for (u64 e = 0; e < E; e++) {
+	int A = seed[0],     B = A + seed[1]; // (0, 0) A | (0, 1) B
+	int C = B + seed[2], D = C + seed[3]; // (1, 0) C | (1, 1) D
+	for (u64 e = 0; e < E; e++) { // generate edge list
 		u64 u = 0, v = 0;
 		for (u16 i = 0; i < scale; i++) {
-			int roll = rand() % D; // roll dice
-			u <<= 1; v <<= 1;
-			// (0, 0) A | (0, 1) B
-			// -------------------
-			// (1, 0) C | (1, 1) D
+			int roll = rand() % D;       // [0, D) roll dice
+			u <<= 1; v <<= 1;            // [0, A)
 			if (roll >= C) { u++; v++; } // [C, D)
 			else if (roll >= B) u++;     // [B, C)
 			else if (roll >= A) v++;     // [A, B)
