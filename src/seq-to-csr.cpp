@@ -12,7 +12,7 @@ int main (int argc, char* argv[]) {
 	string prefix = "csr";
 
 	if (chkOption(argv, argv + argc, "-h")) {
-		cout << "sequential-edges-to-csr -flag [option]" << endl;
+		cout << "seq-to-csr -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
 		cout << " -p:\t (" << prefix  << ") file name prefix for column and row index" << endl;
 		return 0;

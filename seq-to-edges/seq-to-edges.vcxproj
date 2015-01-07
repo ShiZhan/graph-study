@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}</ProjectGuid>
-    <RootNamespace>sequencetograph</RootNamespace>
+    <ProjectGuid>{AB054BE4-65B7-42A5-B1ED-5C86011FE695}</ProjectGuid>
+    <RootNamespace>seqtoedges</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,11 +64,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\sequence-to-graph.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\src\options.h" />
     <ClInclude Include="..\src\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\seq-to-edges.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

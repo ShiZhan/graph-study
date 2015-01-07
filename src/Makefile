@@ -6,10 +6,10 @@ all:
 	make generators translators
 
 generators:
-	make generator edge-sort sequential-edges-to-csr
+	make generator edge-sort seq-to-csr
 
 translators:
-	make sequence-to-graph
+	make seq-to-edges
 
 generator: generator.cpp
 	$(CC) generator.cpp $(CXXFLAGS) -o generator
@@ -17,11 +17,11 @@ generator: generator.cpp
 edge-sort: edge-sort.cpp
 	$(CC) edge-sort.cpp $(CXXFLAGS) -o edge-sort
 
-sequential-edges-to-csr: sequential-edges-to-csr.cpp
-	$(CC) sequential-edges-to-csr.cpp $(CXXFLAGS) -o sequential-edges-to-csr
+seq-to-csr: seq-to-csr.cpp
+	$(CC) seq-to-csr.cpp $(CXXFLAGS) -o seq-to-csr
 
-sequence-to-graph: sequence-to-graph.cpp
-	$(CC) sequence-to-graph.cpp $(CXXFLAGS) -o sequence-to-graph
+seq-to-edges: seq-to-edges.cpp
+	$(CC) seq-to-edges.cpp $(CXXFLAGS) -o seq-to-edges
 
 clean:
-	rm *.exe *.o generator edge-sort sequential-edges-to-csr sequence-to-graph
+	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges

@@ -23,7 +23,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\sequential-edges-to-csr.cpp">
+    <ClCompile Include="..\src\seq-to-edges.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

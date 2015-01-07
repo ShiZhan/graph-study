@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sequence-to-graph", "sequence-to-graph\sequence-to-graph.vcxproj", "{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generator", "generator\generator.vcxproj", "{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sequential-edges-to-csr", "sequential-edges-to-csr\sequential-edges-to-csr.vcxproj", "{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "edge-sort", "edge-sort\edge-sort.vcxproj", "{833595B3-3034-4C70-B94E-D9776894A604}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seq-to-csr", "seq-to-csr\seq-to-csr.vcxproj", "{25C582CB-B6DB-483D-9012-F3094FCFC413}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seq-to-edges", "seq-to-edges\seq-to-edges.vcxproj", "{AB054BE4-65B7-42A5-B1ED-5C86011FE695}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,22 +15,22 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Debug|Win32.Build.0 = Debug|Win32
-		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Release|Win32.ActiveCfg = Release|Win32
-		{B4B6B40C-89CF-4FD4-8CD8-EF61A5EF66ED}.Release|Win32.Build.0 = Release|Win32
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Debug|Win32.Build.0 = Debug|Win32
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Release|Win32.ActiveCfg = Release|Win32
 		{BFB49C34-2757-4C7B-BF4B-E4B8036EEF20}.Release|Win32.Build.0 = Release|Win32
-		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Debug|Win32.Build.0 = Debug|Win32
-		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Release|Win32.ActiveCfg = Release|Win32
-		{9EDD1B2D-9CA8-4274-8230-43C2A8E73B57}.Release|Win32.Build.0 = Release|Win32
 		{833595B3-3034-4C70-B94E-D9776894A604}.Debug|Win32.ActiveCfg = Debug|Win32
 		{833595B3-3034-4C70-B94E-D9776894A604}.Debug|Win32.Build.0 = Debug|Win32
 		{833595B3-3034-4C70-B94E-D9776894A604}.Release|Win32.ActiveCfg = Release|Win32
 		{833595B3-3034-4C70-B94E-D9776894A604}.Release|Win32.Build.0 = Release|Win32
+		{25C582CB-B6DB-483D-9012-F3094FCFC413}.Debug|Win32.ActiveCfg = Debug|Win32
+		{25C582CB-B6DB-483D-9012-F3094FCFC413}.Debug|Win32.Build.0 = Debug|Win32
+		{25C582CB-B6DB-483D-9012-F3094FCFC413}.Release|Win32.ActiveCfg = Release|Win32
+		{25C582CB-B6DB-483D-9012-F3094FCFC413}.Release|Win32.Build.0 = Release|Win32
+		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Debug|Win32.Build.0 = Debug|Win32
+		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Release|Win32.ActiveCfg = Release|Win32
+		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
