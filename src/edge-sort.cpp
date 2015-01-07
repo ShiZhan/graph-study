@@ -1,17 +1,19 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <list>
 #include "options.h"
 #include "utils.h"
 
-#define CHUNK_SCALE 25 // 2^25*16 Bytes = 512 M Bytes
+#define THREAD_MAX   4 // parallel sorting threads
+#define CHUNK_SCALE 20 // 2^20*16 Bytes = 16 M Bytes
 #define _TEMP_FILE_ "_sorted_chunks"
 
 class Edge {
 public:
 	u64 n[2];
-	Edge() { n[0] = -1; n[1] = -1; }
+	Edge () { n[0] = -1; n[1] = -1; }
 	Edge (u64 u, u64 v) { n[0] = u; n[1] = v; }
 
 	bool operator < (const Edge &e) const {
@@ -58,16 +60,18 @@ int main (int argc, char* argv[]) {
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "edge-sort -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -c:\t (" << CHUNK_SCALE << ") sort [2^c] edges per chunk" << endl;
+		cout << " -t:\t (" << THREAD_MAX << ") parallel sorting threads" << endl;
+		cout << " -c:\t (" << CHUNK_SCALE << ") sort [" << (1 << CHUNK_SCALE) << "] edges per chunk" << endl;
 		return 0;
 	}
 
+	u16 threads = getInt(argv, argv + argc, "-t", THREAD_MAX);
 	u64 chunk_limit = 1 << getInt(argv, argv + argc, "-c", CHUNK_SCALE);
 	bool use_tempfile = chkOption(argv, argv + argc, "-c");
 
 	string line;
 	u64 u, v;
-	list<Edge> edges;
+	vector<Edge> edges;
 
 	if (use_tempfile) {
 		fstream temp_file(_TEMP_FILE_, ios::trunc|ios::in|ios::out|ios::binary);
@@ -85,7 +89,7 @@ int main (int argc, char* argv[]) {
 
 			chunk_size = edges.size();
 			if ((!more && chunk_size > 0) || (chunk_size >= chunk_limit)) {
-				edges.sort();
+				sort(edges.begin(), edges.end());
 				for (Edge e: edges) temp_file.write((char*)e.n, sizeof(u64)*2);
 				edges.clear();
 				chunks.push_back(Chunk(chunk_offset, chunk_size, temp_file));
@@ -95,13 +99,14 @@ int main (int argc, char* argv[]) {
 
 		for (auto &c: chunks) c.next(); // select first item from each chunk
 		Edge edge_previous;
+		list<Chunk>::iterator min;
 		while (chunks.size()>0) { // merge sort
-			list<Chunk>::iterator min = min_element(chunks.begin(), chunks.end());
+			min = min_element(chunks.begin(), chunks.end());
 			if (*min != edge_previous) {
 				cout << *min;
 				edge_previous = *min;
 			}
-			if ((*min).next()==0) chunks.erase(min);
+			if (min->next()==0) chunks.erase(min);
 		}
 
 		temp_file.close();
@@ -110,7 +115,7 @@ int main (int argc, char* argv[]) {
 			SSCANF((line.c_str(), "%llu %llu", &u, &v));
 			edges.push_back(Edge(u, v));
 		}
-		edges.sort();
+		sort(edges.begin(), edges.end());
 		Edge edge_previous;
 		for (Edge e: edges) {
 			if (e != edge_previous) {
