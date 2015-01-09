@@ -64,6 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\graph.h" />
     <ClInclude Include="..\src\options.h" />
     <ClInclude Include="..\src\utils.h" />
   </ItemGroup>
