@@ -8,6 +8,21 @@
 #define PREFIX "csr" // CSR indices name prefix default
 #define SOURCE 3     // source vertex default
 
+#define ADDR(X) (X << 3) // get vertex address, multiply by sizeof(u64).
+#define SIZE(X) (X << 3) // get neighbour size, multiply by sizeof(u64).
+
+u64 getNeighbours(std::ifstream &ci, std::ifstream &ri, u64 source, std::vector<u64> &neighbours) {
+	u64 row_range[2] = {0, 0};
+	u64 address = ADDR(source);
+	ri.seekg(address);
+	ri.read((char*)row_range, SIZE(2));
+	u64 total = row_range[1] - row_range[0]; // ASSERT neighbour_total < 2^25
+	neighbours.resize((int)total);
+	ci.seekg(ADDR(row_range[0]));
+	ci.read((char*)neighbours.data(), SIZE(total));
+	return total;
+}
+
 int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
@@ -37,18 +52,10 @@ int main (int argc, char* argv[]) {
 	}
 
 	// algorithm start
-	u64 row_range[2] = {0, 0};
-	u64 address = source << 3; // multiply by sizeof(u64)*2
-	ri.seekg(address);
-	ri.read((char*)row_range, sizeof(u64)*2);
-	cout << row_range[0] << " " << row_range[1] << endl;
-	u64 neighbour = 0;
 	vector<u64> neighbours;
-	u64 neighbour_total = row_range[1] - row_range[0];
-	neighbours.resize((int)neighbour_total);
-	ci.seekg(row_range[0] << 3);
-	ci.read((char*)neighbours.data(), neighbour_total * sizeof(u64));
+	u64 total = getNeighbours(ci, ri, source, neighbours);
 	for (u64 n: neighbours) cout << n << endl;
+	neighbours.clear();
 	// algorithm end
 
 	ci.close();
