@@ -11,6 +11,9 @@ generators:
 translators:
 	make seq-to-edges
 
+algorithms:
+	make sssp
+
 generator: generator.cpp
 	$(CC) generator.cpp $(CXXFLAGS) -o generator
 
@@ -23,5 +26,8 @@ seq-to-csr: seq-to-csr.cpp
 seq-to-edges: seq-to-edges.cpp
 	$(CC) seq-to-edges.cpp $(CXXFLAGS) -o seq-to-edges
 
+sssp: sssp.cpp
+	$(CC) sssp.cpp $(CXXFLAGS) -o sssp
+
 clean:
-	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges
+	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp
