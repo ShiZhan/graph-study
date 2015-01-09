@@ -4,24 +4,23 @@
 #include "options.h"
 #include "utils.h"
 
+#define PREFIX "csr" // CSR indices name prefix default
+
 int main (int argc, char* argv[]) {
 	using namespace std;
 	using namespace opt;
 
-	// default values
-	string prefix = "csr";
-
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "seq-to-csr -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -p:\t (" << prefix  << ") file name prefix for column and row index" << endl;
+		cout << " -p:\t (" << PREFIX << ") file name prefix for column and row index" << endl;
 		return 0;
 	}
 
-	char* prefix_str  = getOption(argv, argv + argc, "-p");
+	char* prefix_str = getOption(argv, argv + argc, "-p");
 
 	// get prefix
-	if (prefix_str) prefix = prefix_str;
+	string prefix = prefix_str ? prefix_str : PREFIX;
 	string col_index_name = prefix + "-col.idx";
 	string row_index_name = prefix + "-row.idx";
 
