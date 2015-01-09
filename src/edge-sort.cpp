@@ -6,7 +6,7 @@
 #include "options.h"
 #include "utils.h"
 
-#define CHUNK_SCALE 20 // 2^20*16 Bytes = 16 M Bytes
+#define CHUNK_SCALE 25 // 2^25*16 Bytes = 512 M Bytes
 #define _TEMP_FILE_ "_sorted_chunks"
 
 class Edge {
