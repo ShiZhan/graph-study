@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seq-to-csr", "seq-to-csr\se
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seq-to-edges", "seq-to-edges\seq-to-edges.vcxproj", "{AB054BE4-65B7-42A5-B1ED-5C86011FE695}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sssp", "sssp\sssp.vcxproj", "{36763248-3001-4666-A102-B10CA0906A7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Debug|Win32.Build.0 = Debug|Win32
 		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Release|Win32.ActiveCfg = Release|Win32
 		{AB054BE4-65B7-42A5-B1ED-5C86011FE695}.Release|Win32.Build.0 = Release|Win32
+		{36763248-3001-4666-A102-B10CA0906A7C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{36763248-3001-4666-A102-B10CA0906A7C}.Debug|Win32.Build.0 = Debug|Win32
+		{36763248-3001-4666-A102-B10CA0906A7C}.Release|Win32.ActiveCfg = Release|Win32
+		{36763248-3001-4666-A102-B10CA0906A7C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
