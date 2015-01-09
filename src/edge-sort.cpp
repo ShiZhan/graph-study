@@ -6,7 +6,6 @@
 #include "options.h"
 #include "utils.h"
 
-#define THREAD_MAX   4 // parallel sorting threads
 #define CHUNK_SCALE 20 // 2^20*16 Bytes = 16 M Bytes
 #define _TEMP_FILE_ "_sorted_chunks"
 
@@ -60,12 +59,10 @@ int main (int argc, char* argv[]) {
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "edge-sort -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -t:\t (" << THREAD_MAX << ") parallel sorting threads" << endl;
 		cout << " -c:\t (" << CHUNK_SCALE << ") sort [" << (1 << CHUNK_SCALE) << "] edges per chunk" << endl;
 		return 0;
 	}
 
-	u16 threads = getInt(argv, argv + argc, "-t", THREAD_MAX);
 	u64 chunk_limit = 1 << getInt(argv, argv + argc, "-c", CHUNK_SCALE);
 	bool use_tempfile = chkOption(argv, argv + argc, "-c");
 
