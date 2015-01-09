@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <fstream>
 #include <vector>
 #include "graph.h"
 #include "options.h"
