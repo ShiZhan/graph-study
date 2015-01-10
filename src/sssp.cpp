@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "graph.h"
+#include "csr.h"
 #include "options.h"
 #include "utils.h"
 
@@ -25,7 +25,7 @@ int main (int argc, char* argv[]) {
 
 	string prefix = prefix_str ? prefix_str : PREFIX; // get prefix
 
-	CSRGraph g;
+	CSR g;
 	u64 vertex_total = g.load(prefix);
 	if (vertex_total == 0) {
 		cerr << "CSRGraph load error!" << endl;

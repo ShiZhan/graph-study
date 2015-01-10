@@ -1,5 +1,5 @@
-#ifndef graph_h
-#define graph_h
+#ifndef csr_h
+#define csr_h
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,11 +8,11 @@
 #define ADDR(X) (X << 3) // get vertex address, multiply by sizeof(u64).
 #define SIZE(X) (X << 3) // get neighbour size, multiply by sizeof(u64).
 
-class CSRGraph
+class CSR
 {
 public:
-	CSRGraph() { loaded = false; vertices = NULL; }
-	~CSRGraph() {}
+	CSR() { loaded = false; vertices = NULL; }
+	~CSR() {}
 
 	u64 load(std::string prefix) {
 		if (!loaded) { // prepare input indices
