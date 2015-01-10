@@ -3,7 +3,7 @@ CC = g++
 CXXFLAGS = --std=c++11 -O3
 
 all:
-	make generators translators
+	make generators translators algorithms
 
 generators:
 	make generator edge-sort seq-to-csr

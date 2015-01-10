@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
 #include "utils.h"
 
 #define ADDR(X) (X << 3) // get vertex address, multiply by sizeof(u64).
@@ -28,9 +27,9 @@ public:
 			} else {
 				ri.seekg(0, std::ios::end);
 				u64 size = ri.tellg();
-				vertices.resize((unsigned int)size/sizeof(u64));
+				vertices = (u64*)malloc(size);
 				ri.seekg(0, std::ios::beg);
-				ri.read((char*)vertices.data(), size);
+				ri.read((char*)vertices, size);
 				ri.close();
 				loaded = true;
 				return size-1;
@@ -40,15 +39,16 @@ public:
 
 	void unload() {
 		if (loaded) {
-			vertices.clear();
+			delete vertices;
+			vertices = NULL;
 			ci.close();
 		}
 	}
 
 	u64 getNeighbours(u64 source, std::vector<u64> &neighbours) {
 		if (loaded) {
-			u64 row_begin = vertices[(unsigned int)source]; // current implementation can not support 2^32+ vertices in memory
-			u64 row_end   = vertices[(unsigned int)source+1];
+			u64 row_begin = vertices[source];
+			u64 row_end   = vertices[source+1];
 			u64 total = row_end - row_begin; // ASSERT total < 2^25
 			neighbours.resize((unsigned int)total);
 			ci.seekg(ADDR(row_begin));
@@ -59,6 +59,6 @@ public:
 private:
 	std::ifstream ci, ri;
 	bool loaded;
-	std::vector<u64> vertices;
+	u64* vertices;
 };
 #endif
