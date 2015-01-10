@@ -32,11 +32,13 @@ int main (int argc, char* argv[]) {
 		return -1;
 	}
 
+	u64* d_v = new u64[(unsigned int)vertex_total];
 	vector<u64> neighbours;
 	u64 total = g.getNeighbours(source, neighbours);
 	for (u64 n: neighbours) cout << n << endl;
 	neighbours.clear();
 
+	delete[] d_v;
 	g.unload();
 
 	return 0;

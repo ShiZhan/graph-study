@@ -27,7 +27,7 @@ public:
 			} else {
 				ri.seekg(0, std::ios::end);
 				u64 size = ri.tellg();
-				vertices = (u64*)malloc(size);
+				vertices = (u64*)malloc((size_t)size);
 				ri.seekg(0, std::ios::beg);
 				ri.read((char*)vertices, size);
 				ri.close();
@@ -39,7 +39,7 @@ public:
 
 	void unload() {
 		if (loaded) {
-			delete vertices;
+			free(vertices);
 			vertices = NULL;
 			ci.close();
 		}
