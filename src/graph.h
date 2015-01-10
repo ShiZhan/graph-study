@@ -11,7 +11,7 @@
 class CSRGraph
 {
 public:
-	CSRGraph() { loaded = false; }
+	CSRGraph() { loaded = false; vertices = NULL; }
 	~CSRGraph() {}
 
 	u64 load(std::string prefix) {
@@ -50,9 +50,11 @@ public:
 			u64 row_begin = vertices[source];
 			u64 row_end   = vertices[source+1];
 			u64 total = row_end - row_begin; // ASSERT total < 2^25
-			neighbours.resize((unsigned int)total);
-			ci.seekg(ADDR(row_begin));
-			ci.read((char*)neighbours.data(), SIZE(total));
+			if (total) {
+				neighbours.resize((unsigned int)total);
+				ci.seekg(ADDR(row_begin));
+				ci.read((char*)neighbours.data(), SIZE(total));
+			}
 			return total;
 		} else return 0;
 	}
