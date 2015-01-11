@@ -35,7 +35,7 @@ int main (int argc, char* argv[]) {
 	}
 
 	bool* visited = new bool[vertex_total];
-	u64 i, d;
+	u64 i;
 	for (i=0; i<vertex_total; i++) visited[i] = false;
 	queue<u64> traversal;
 	traversal.push(root);
@@ -48,11 +48,7 @@ int main (int argc, char* argv[]) {
 			visited[i] = true;
 			u64 total = g.getNeighbours(i, neighbours);
 			if (total) {
-				for (u64 n: neighbours) {
-					if (!visited[n]) {
-						traversal.push(n);
-					}
-				}
+				for (u64 n: neighbours) traversal.push(n);
 				neighbours.clear();
 			}
 		}
