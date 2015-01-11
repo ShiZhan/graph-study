@@ -1,12 +1,26 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include "csr.h"
 #include "options.h"
 #include "utils.h"
 
-#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/15-112-n-u" // CSR indices name prefix default
+//#define PREFIX "csr" // CSR indices name prefix default
+#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/8-8-n-u" // CSR indices name prefix default
 #define SOURCE 3     // source vertex default
+
+class Vertex
+{
+public:
+	u64 value;
+	bool visited;
+	Vertex() { value = -1; visited = false; }
+	~Vertex() {}
+	bool operator < (const Vertex &v) const {
+		return value < v.value;
+	}
+};
 
 int main (int argc, char* argv[]) {
 	using namespace std;
@@ -32,13 +46,39 @@ int main (int argc, char* argv[]) {
 		return -1;
 	}
 
-	u64* d_v = new u64[(unsigned int)vertex_total];
+	Vertex* vertices = new Vertex[vertex_total];
+	u64 i, d;
+	list<u64> traversal(1, source);
+	vertices[source].value = 0;
+	list<u64>::iterator current;
 	vector<u64> neighbours;
-	u64 total = g.getNeighbours(source, neighbours);
-	for (u64 n: neighbours) cout << n << endl;
-	neighbours.clear();
+	while(!traversal.empty()) {
+		current = min_element(traversal.begin(), traversal.end(),
+			[=](u64 i, u64 j) { return vertices[i] < vertices[j]; });
+		i = *current;
+		traversal.erase(current);
+		if (!vertices[i].visited) {
+			d = vertices[i].value;
+			vertices[i].visited = true;
+			u64 total = g.getNeighbours(i, neighbours);
+			if (total) {
+				for (u64 n: neighbours) {
+					if (vertices[n].visited) {
+						if ((d + 1) < vertices[n].value) vertices[n].value = d + 1;
+					} else {
+						traversal.push_back(n);
+						vertices[n].value = d + 1; // step over weight-1 edge
+					}
+				}
+				neighbours.clear();
+			}
+		}
+	}
 
-	delete[] d_v;
+	for (i=0; i<vertex_total; i++) cout << vertices[i].value << endl;
+
+	delete[] vertices;
+
 	g.unload();
 
 	return 0;

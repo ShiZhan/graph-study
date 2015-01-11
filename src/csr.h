@@ -32,7 +32,7 @@ public:
 				ri.read((char*)vertices, size);
 				ri.close();
 				loaded = true;
-				return size-1;
+				return size/sizeof(u64)-1;
 			}
 		} else return 0;
 	}
