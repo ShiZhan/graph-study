@@ -47,7 +47,7 @@ int main (int argc, char* argv[]) {
 	}
 
 	Vertex* vertices = new Vertex[vertex_total];
-	u64 i, d;
+	u64 i, dist;
 	list<u64> traversal(1, source);
 	vertices[source].value = 0;
 	list<u64>::iterator current;
@@ -58,17 +58,14 @@ int main (int argc, char* argv[]) {
 		i = *current;
 		traversal.erase(current);
 		if (!vertices[i].visited) {
-			d = vertices[i].value;
+			dist = vertices[i].value;
 			vertices[i].visited = true;
 			u64 total = g.getNeighbours(i, neighbours);
 			if (total) {
 				for (u64 n: neighbours) {
-					if (vertices[n].visited) {
-						if ((d + 1) < vertices[n].value) vertices[n].value = d + 1;
-					} else {
-						traversal.push_back(n);
-						vertices[n].value = d + 1; // step over weight-1 edge
-					}
+					u64 newDist = dist + 1; // step over weight-1 edge
+					if (newDist < vertices[n].value) vertices[n].value = newDist;
+					traversal.push_back(n);
 				}
 				neighbours.clear();
 			}
