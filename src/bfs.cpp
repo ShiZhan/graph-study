@@ -6,8 +6,8 @@
 #include "options.h"
 #include "utils.h"
 
-//#define PREFIX "csr" // CSR indices name prefix default
-#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/8-8-n-u" // CSR indices name prefix default
+#define PREFIX "csr" // CSR indices name prefix default
+//#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/8-8-n-u"
 #define ROOT 3     // source vertex default
 
 int main (int argc, char* argv[]) {

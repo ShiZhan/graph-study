@@ -6,8 +6,8 @@
 #include "options.h"
 #include "utils.h"
 
-//#define PREFIX "csr" // CSR indices name prefix default
-#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/8-8-n-u" // CSR indices name prefix default
+#define PREFIX "csr" // CSR indices name prefix default
+//#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/8-8-n-u"
 #define SOURCE 3     // source vertex default
 
 class Vertex
@@ -46,10 +46,10 @@ int main (int argc, char* argv[]) {
 		return -1;
 	}
 
-	Vertex* vertices = new Vertex[vertex_total];
 	u64 i, dist;
-	list<u64> traversal(1, source);
+	Vertex* vertices = new Vertex[vertex_total];
 	vertices[source].value = 0;
+	list<u64> traversal(1, source);
 	list<u64>::iterator current;
 	vector<u64> neighbours;
 	while(!traversal.empty()) {
@@ -71,8 +71,7 @@ int main (int argc, char* argv[]) {
 			}
 		}
 	}
-
-	for (i=0; i<vertex_total; i++) cout << vertices[i].value << endl;
+	for (i=0; i<vertex_total; i++) cout << i << "\t" << vertices[i].value << endl;
 
 	delete[] vertices;
 
