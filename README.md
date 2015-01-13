@@ -49,3 +49,14 @@ sequential edges to CSR
 
 Transform sequential edges to [Compress Sparse Row](http://en.wikipedia.org/wiki/Sparse_matrix) file (row index and column index).
 
+BFS and DFS
+-----------
+
+Perform BFS or DFS on designated graph, which is stored in CSR indices.
+
+SSSP
+----
+
+Single Source Shortest Path.
+
+
