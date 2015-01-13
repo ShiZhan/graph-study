@@ -12,7 +12,7 @@ class CSR
 {
 public:
 	CSR() { loaded = false; vertices = NULL; }
-	~CSR() {}
+	~CSR() { unload(); }
 
 	u64 load(std::string prefix) {
 		if (!loaded) { // prepare input indices
@@ -42,6 +42,7 @@ public:
 			free(vertices);
 			vertices = NULL;
 			ci.close();
+            loaded = false;
 		}
 	}
 
