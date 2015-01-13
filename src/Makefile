@@ -12,7 +12,7 @@ translators:
 	make seq-to-edges
 
 algorithms:
-	make sssp bfs
+	make sssp bfs dfs
 
 generator: generator.cpp
 	$(CC) generator.cpp $(CXXFLAGS) -o generator
@@ -32,5 +32,8 @@ sssp: sssp.cpp
 bfs: bfs.cpp
 	$(CC) bfs.cpp $(CXXFLAGS) -o bfs
 
+dfs: dfs.cpp
+	$(CC) dfs.cpp $(CXXFLAGS) -o dfs
+
 clean:
-	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp bfs
+	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp bfs dfs
