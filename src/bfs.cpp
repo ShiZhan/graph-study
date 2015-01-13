@@ -15,7 +15,7 @@ int main (int argc, char* argv[]) {
 	using namespace opt;
 
 	if (chkOption(argv, argv + argc, "-h")) {
-		cout << "sssp -flag [option]" << endl;
+		cout << "bfs -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
 		cout << " -p:\t (" << PREFIX << ") file name prefix for column and row index" << endl;
 		cout << " -r:\t (" << ROOT   << ") root vertex" << endl;
@@ -37,6 +37,7 @@ int main (int argc, char* argv[]) {
 	bool* visited = new bool[vertex_total];
 	u64 i;
 	for (i=0; i<vertex_total; i++) visited[i] = false;
+
 	queue<u64> traversal;
 	traversal.push(root);
 	vector<u64> neighbours;
