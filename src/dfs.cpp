@@ -8,7 +8,7 @@
 
 #define PREFIX "csr" // CSR indices name prefix default
 //#define PREFIX "c:/msys/home/Zhan/repository/graph-study/data-sample/8-8-n-u"
-#define ROOT 3     // source vertex default
+#define ROOT 0     // source vertex default
 
 int main (int argc, char* argv[]) {
 	using namespace std;
@@ -34,25 +34,28 @@ int main (int argc, char* argv[]) {
 		return -1;
 	}
 
-	bool* visited = new bool[vertex_total];
+	bool* visited = new bool[vertex_total+1];
 	u64 i;
-	for (i=0; i<vertex_total; i++) visited[i] = false;
-
-	stack<u64> traversal;
-	traversal.push(root);
-	vector<u64> neighbours;
-	while(!traversal.empty()) {
-		i = traversal.top();
-		traversal.pop();
-		if (!visited[i]) {
-			cout << i << endl;
-			visited[i] = true;
-			u64 total = g.getNeighbours(i, neighbours);
-			if (total) {
-				for (u64 n: neighbours) traversal.push(n);
-				neighbours.clear();
+	for (i=0; i<=vertex_total; i++) visited[i] = false;
+	while (root<vertex_total) {
+		stack<u64> traversal;
+		traversal.push(root);
+		vector<u64> neighbours;
+		while(!traversal.empty()) {
+			i = traversal.top();
+			traversal.pop();
+			if (!visited[i]) {
+				cout << i << endl;
+				visited[i] = true;
+				u64 total = g.getNeighbours(i, neighbours);
+				if (total) {
+					for (u64 n: neighbours) traversal.push(n);
+					neighbours.clear();
+				}
 			}
 		}
+		root = 0;
+		while (visited[root]) root++;
 	}
 
 	delete[] visited;
