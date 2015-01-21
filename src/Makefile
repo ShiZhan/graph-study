@@ -2,14 +2,15 @@ CC = g++
 
 CXXFLAGS = --std=c++11 -O3
 
+BOOST_DIR = c:/boost-src/
+
+USE_BOOST = -I$(BOOST_DIR)
+
 all:
-	make generators translators algorithms
+	make generators algorithms bgl-shell
 
 generators:
-	make generator edge-sort seq-to-csr
-
-translators:
-	make seq-to-edges
+	make generator edge-sort seq-to-csr seq-to-edges
 
 algorithms:
 	make sssp bfs dfs
@@ -35,5 +36,8 @@ bfs: bfs.cpp
 dfs: dfs.cpp
 	$(CC) dfs.cpp $(CXXFLAGS) -o dfs
 
+bgl-shell: bgl-shell.cpp
+	$(CC) bgl-shell.cpp $(CXXFLAGS) $(USE_BOOST) -o bgl-shell
+
 clean:
-	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp bfs dfs
+	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp bfs dfs bgl-shell
