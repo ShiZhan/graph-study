@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 	using namespace opt;
 
 	typedef pair<uint, uint> Edge;
-	typedef adjacency_list<listS, vecS, directedS, no_property> Graph;
+	typedef adjacency_list<setS, vecS, directedS, no_property> Graph;
 	typedef Graph::vertex_iterator    ItrVertex;
 	typedef Graph::adjacency_iterator ItrNeighbour;
 
@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
 			if (u > N) N = u;
 			if (v > N) N = v;
 		}
+		ifs.close();
 	} else {
 		while (getline(cin, line)) {
 			SSCANF((line.c_str(), "%u %u", &u, &v));
@@ -48,7 +49,7 @@ int main(int argc, char* argv[]) {
 	ItrNeighbour neighbourIt, neighbourEnd;
 	boost::tie(vertexIt, vertexEnd) = vertices(g);
 	for (; vertexIt != vertexEnd; ++vertexIt) {
-		cout << *vertexIt << " is connected with ";
+		cout << *vertexIt << " --> ";
 		boost::tie(neighbourIt, neighbourEnd) = adjacent_vertices(*vertexIt, g);
 		for (; neighbourIt != neighbourEnd; ++neighbourIt) cout << *neighbourIt << " ";
 		cout << "\n";
