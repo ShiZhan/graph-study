@@ -1,3 +1,5 @@
+#ifndef options_h
+#define options_h
 #include <string>
 #include <algorithm>
 #include "utils.h"
@@ -40,3 +42,4 @@ namespace opt {
 		return value;
 	}
 }
+#endif
