@@ -40,6 +40,8 @@ void print_adjacency_list(Graph &g) {
 	}
 }
 
+#define SOURCE 0
+
 int main(int argc, char* argv[]) {
 	using namespace opt;
 
@@ -48,16 +50,21 @@ int main(int argc, char* argv[]) {
 		cout << " -h:\t ask for help" << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
 		cout << " -e:\t perform [BFS|DFS|SSSP], etc." << endl;
+		cout << " -s:\t (" << SOURCE << ") specify source vertex" << endl;
 		return 0;
 	}
 
 	char* edges_file = getOption(argv, argv + argc, "-i");
 	char* algorithm  = getOption(argv, argv + argc, "-e");
+	int   source     = getInt(argv, argv + argc, "-s", SOURCE);
 
 	Graph g;
 	uint n_edges = get_edges(edges_file, g);
 
 	if (algorithm) {
-		cout << "TODO" << endl;
+		if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) { cout << "Do BFS" << endl; }
+		else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) { cout << "Do DFS" << endl; }
+		else if (!(strcmp(algorithm, "sssp") && strcmp(algorithm, "SSSP"))) { cout << "Do SSSP" << endl; }
+		else { cout << "Available algorithms: BFS, DFS, SSSP." << endl; }
 	} else print_adjacency_list(g);
 }
