@@ -15,7 +15,7 @@
 using namespace std;
 using namespace boost;
 typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
-typedef rmat_iterator<minstd_rand, graph_t> rmat_gen;
+typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
 
 class custom_bfs_visitor : public default_bfs_visitor {
 public:
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 		if (rmat_opt) SSCANF((rmat_opt, "%u:%u", &scale_v, &scale_e));
 		total_vertices = 1 << scale_v;
 		total_edges    = total_vertices * E;
-		minstd_rand gen;
+		boost::minstd_rand gen;
 		gen.seed((uint)time(NULL));
 		g = graph_t(
 			rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05),
