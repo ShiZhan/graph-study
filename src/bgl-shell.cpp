@@ -1,16 +1,21 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <time.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/depth_first_search.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/rmat_graph_generator.hpp>
+#include <boost/graph/graph_utility.hpp>
+#include <boost/random/linear_congruential.hpp>
 #include "options.h"
 #include "utils.h"
 
 using namespace std;
 using namespace boost;
 typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
+typedef rmat_iterator<minstd_rand, graph_t> rmat_gen;
 
 class custom_bfs_visitor : public default_bfs_visitor {
 public:
@@ -51,17 +56,9 @@ uint get_edges(char* edges_file, graph_t &g) {
 	return total;
 }
 
-void print_adjacency_list(graph_t &g) {
-	graph_t::adjacency_iterator neighbourIt, neighbourEnd;
-	for (auto v: g.vertex_set()) {
-		cout << v << " --> ";
-		boost::tie(neighbourIt, neighbourEnd) = adjacent_vertices(v, g);
-		for (; neighbourIt != neighbourEnd; ++neighbourIt) cout << *neighbourIt << " ";
-		cout << endl;
-	}
-}
-
 #define SOURCE 0
+#define V 8
+#define E 8
 
 int main(int argc, char* argv[]) {
 	using namespace opt;
@@ -69,28 +66,52 @@ int main(int argc, char* argv[]) {
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "bgl-shell -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
+		cout << " -g:\t generate graph with 2^(" << V << ") vertices and (" << E << ") times edges" << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
-		cout << " -e:\t perform [BFS|DFS|SSSP], etc." << endl;
+		cout << " -e:\t perform [BFS|DFS], etc." << endl;
 		cout << " -s:\t (" << SOURCE << ") specify source vertex" << endl;
 		return 0;
 	}
 
+	char* rmat_opt   = getOption(argv, argv + argc, "-g");
+	bool  use_rmat   = chkOption(argv, argv + argc, "-g");
 	char* edges_file = getOption(argv, argv + argc, "-i");
 	char* algorithm  = getOption(argv, argv + argc, "-e");
 	uint  source     = getInt(argv, argv + argc, "-s", SOURCE);
 
 	graph_t g;
-	uint n_edges = get_edges(edges_file, g);
+	uint total_vertices = 0, total_edges = 0;
+	if (use_rmat) {
+		uint scale_v = V, scale_e = E;
+		if (rmat_opt) SSCANF((rmat_opt, "%u:%u", &scale_v, &scale_e));
+		total_vertices = 1 << scale_v;
+		total_edges    = total_vertices * E;
+		minstd_rand gen;
+		gen.seed((uint)time(NULL));
+		g = graph_t(
+			rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05),
+			rmat_gen(),
+			total_vertices);
+	} else {
+		uint total_edges    = get_edges(edges_file, g);
+		uint total_vertices = num_vertices(g);
+	}
 
 	if (algorithm) {
 		if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
-			custom_bfs_visitor bv;
-			breadth_first_search(g, vertex(source, g), visitor(bv));
+			custom_bfs_visitor b_v;
+			breadth_first_search(g, vertex(source, g), visitor(b_v));
 		} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
-			custom_dfs_visitor dv;
-			depth_first_search(g, root_vertex(vertex(source, g)).visitor(dv));
-		} else if (!(strcmp(algorithm, "sssp") && strcmp(algorithm, "SSSP"))) {
-			cout << "Do SSSP" << endl;
-		} else { cout << "Available algorithms: BFS, DFS, SSSP." << endl; }
-	} else print_adjacency_list(g);
+			custom_dfs_visitor d_v;
+			depth_first_search(g, root_vertex(vertex(source, g)).visitor(d_v));
+		} else { cout << "Available algorithms: BFS, DFS." << endl; }
+	} else {
+		if (use_rmat) {
+			graph_t::edge_iterator ei, ei_end;
+			for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+				cout << boost::source(*ei, g) << " " << boost::target(*ei, g) << endl;
+		} else {
+			print_graph(g);
+		}
+	}
 }
