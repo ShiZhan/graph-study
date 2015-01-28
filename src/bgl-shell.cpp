@@ -6,6 +6,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/depth_first_search.hpp>
+#include <boost/graph/strong_components.hpp>
 #include <boost/graph/rmat_graph_generator.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/random/linear_congruential.hpp>
@@ -75,7 +76,7 @@ int main(int argc, char* argv[]) {
 		cout << " -h:\t ask for help" << endl;
 		cout << " -g:\t (v:e) generate graph with 2^v(" << V << ") vertices and e(" << E << ") times edges" << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
-		cout << " -e:\t perform [BFS|DFS], etc." << endl;
+		cout << " -e:\t perform [BFS|DFS|SCC], etc." << endl;
 		cout << " -s:\t (" << SOURCE << ") specify source vertex" << endl;
 		return 0;
 	}
@@ -111,6 +112,11 @@ int main(int argc, char* argv[]) {
 		} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
 			custom_dfs_visitor d_v;
 			depth_first_search(g, root_vertex(vertex(source, g)).visitor(d_v));
+		} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
+			vector<int> component(num_vertices(g));
+			uint num = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+			uint i = 0;
+			for (auto c: component) cout << i++ << " " << c << endl;
 		} else { cout << "Available algorithms: BFS, DFS." << endl; }
 	} else {
 		if (use_rmat)
