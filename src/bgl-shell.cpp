@@ -14,26 +14,25 @@
 
 using namespace std;
 using namespace boost;
-typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
-typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
 
 class custom_bfs_visitor : public default_bfs_visitor {
 public:
-	template < typename Vertex, typename Graph >
-	void discover_vertex(Vertex v, const Graph &g) const {
+	template <typename Vertex, typename Graph>
+	void discover_vertex(Vertex v, const Graph& g) const {
 		cout << v << endl;
 	}
 };
 
 class custom_dfs_visitor : public default_dfs_visitor {
 public:
-	template < typename Vertex, typename Graph >
-	void discover_vertex(Vertex v, const Graph &g) const {
+	template <typename Vertex, typename Graph>
+	void discover_vertex(Vertex v, const Graph& g) const {
 		cout << v << endl;
 	}
 };
 
-uint get_edges(char* edges_file, graph_t &g) {
+template <class Graph>
+uint get_edges(char* edges_file, Graph& g) {
 	uint u, v, total = 0;
 	string line;
 	if (edges_file) {
@@ -56,12 +55,20 @@ uint get_edges(char* edges_file, graph_t &g) {
 	return total;
 }
 
+template <class Graph>
+void print_edges(const Graph& g) {
+	BGL_FORALL_EDGES_T(e, g, Graph)
+		cout << boost::source(e, g) << " " << boost::target(e, g) << endl;
+}
+
 #define SOURCE 0
 #define V 8
 #define E 8
 
 int main(int argc, char* argv[]) {
 	using namespace opt;
+	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
+	typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "bgl-shell -flag [option]" << endl;
@@ -106,12 +113,9 @@ int main(int argc, char* argv[]) {
 			depth_first_search(g, root_vertex(vertex(source, g)).visitor(d_v));
 		} else { cout << "Available algorithms: BFS, DFS." << endl; }
 	} else {
-		if (use_rmat) {
-			graph_t::edge_iterator ei, ei_end;
-			for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
-				cout << boost::source(*ei, g) << " " << boost::target(*ei, g) << endl;
-		} else {
+		if (use_rmat)
+			print_edges(g);
+		else
 			print_graph(g);
-		}
 	}
 }
