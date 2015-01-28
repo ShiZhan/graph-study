@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
 		uint scale_v = V, scale_e = E;
 		if (rmat_opt) SSCANF((rmat_opt, "%u:%u", &scale_v, &scale_e));
 		total_vertices = 1 << scale_v;
-		total_edges    = total_vertices * E;
+		total_edges    = total_vertices * scale_e;
 		boost::minstd_rand gen;
 		gen.seed((uint)time(NULL));
 		g = graph_t(
@@ -93,8 +93,8 @@ int main(int argc, char* argv[]) {
 			rmat_gen(),
 			total_vertices);
 	} else {
-		uint total_edges    = get_edges(edges_file, g);
-		uint total_vertices = num_vertices(g);
+		total_edges    = get_edges(edges_file, g);
+		total_vertices = num_vertices(g);
 	}
 
 	if (algorithm) {
