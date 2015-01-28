@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "bgl-shell -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -g:\t generate graph with 2^(" << V << ") vertices and (" << E << ") times edges" << endl;
+		cout << " -g:\t (v:e) generate graph with 2^v(" << V << ") vertices and e(" << E << ") times edges" << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
 		cout << " -e:\t perform [BFS|DFS], etc." << endl;
 		cout << " -s:\t (" << SOURCE << ") specify source vertex" << endl;
