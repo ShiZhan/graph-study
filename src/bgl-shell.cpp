@@ -77,9 +77,9 @@ int main(int argc, char* argv[]) {
 		cout << " -h:\t ask for help" << endl;
 		cout << " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl;
 		cout << " -p:\t set graph generator parameters" << endl;
-		cout << " \t Recursive-MATrix parameters: " << DEFAULT_RMAT << endl;
-		cout << " \t Erdos-Renyi parameters: " << DEFAULT_ER << endl;
-		cout << " \t small-world parameters: " << DEFAULT_SW << endl;
+		cout << " \t Recursive-MATrix parameters: \t " << DEFAULT_RMAT << endl;
+		cout << " \t Erdos-Renyi parameters: \t " << DEFAULT_ER << endl;
+		cout << " \t small-world parameters: \t " << DEFAULT_SW << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
 		cout << " -e:\t perform [BFS|DFS|SCC], etc." << endl;
 		cout << " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
@@ -94,9 +94,9 @@ int main(int argc, char* argv[]) {
 	uint  v_root     = getInt(argv, argv + argc, "-s", DEFAULT_ROOT);
 
 	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
-	typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
-	typedef boost::erdos_renyi_iterator<boost::minstd_rand, graph_t> er_gen;
-	typedef boost::small_world_iterator<boost::minstd_rand, graph_t> sw_gen;
+	typedef rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
+	typedef erdos_renyi_iterator<boost::minstd_rand, graph_t> er_gen;
+	typedef small_world_iterator<boost::minstd_rand, graph_t> sw_gen;
 
 	graph_t g;
 	uint total_vertices = 0, total_edges = 0;
