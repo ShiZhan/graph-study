@@ -113,11 +113,13 @@ int main(int argc, char* argv[]) {
 			custom_dfs_visitor d_v;
 			depth_first_search(g, root_vertex(vertex(source, g)).visitor(d_v));
 		} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
-			vector<int> component(num_vertices(g));
+			vector<uint> component(num_vertices(g));
 			uint num = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
 			uint i = 0;
 			for (auto c: component) cout << i++ << " " << c << endl;
-		} else { cout << "Available algorithms: BFS, DFS." << endl; }
+		} else {
+			cout << "Available algorithms: BFS, DFS." << endl;
+		}
 	} else {
 		if (use_rmat)
 			print_edges(g);
