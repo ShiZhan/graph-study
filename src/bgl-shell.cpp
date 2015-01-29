@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -8,6 +8,8 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/strong_components.hpp>
 #include <boost/graph/rmat_graph_generator.hpp>
+#include <boost/graph/erdos_renyi_generator.hpp>
+#include <boost/graph/small_world_generator.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/random/linear_congruential.hpp>
 #include "options.h"
@@ -62,44 +64,70 @@ void print_edges(const Graph& g) {
 		cout << boost::source(e, g) << " " << boost::target(e, g) << endl;
 }
 
-#define SOURCE 0
-#define V 8
-#define E 8
+#define ROOT 0
+#define DEFAULT_RMAT "8:8"
+#define DEFAULT_ER   "256:0.05"
+#define DEFAULT_SW   "256:6:0.03"
 
 int main(int argc, char* argv[]) {
 	using namespace opt;
-	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
-	typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "bgl-shell -flag [option]" << endl;
 		cout << " -h:\t ask for help" << endl;
-		cout << " -g:\t (v:e) generate graph with 2^v(" << V << ") vertices and e(" << E << ") times edges" << endl;
+		cout << " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl;
+		cout << " -p:\t set graph generator parameters" << endl;
+		cout << " \t Recursive-MATrix parameters: " << DEFAULT_RMAT << endl;
+		cout << " \t Erdos-Renyi parameters: " << DEFAULT_ER << endl;
+		cout << " \t small-world parameters: " << DEFAULT_SW << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
 		cout << " -e:\t perform [BFS|DFS|SCC], etc." << endl;
-		cout << " -s:\t (" << SOURCE << ") specify source vertex" << endl;
+		cout << " -r:\t (" << ROOT << ") specify root vertex for graph traversal" << endl;
 		return 0;
 	}
 
-	char* rmat_opt   = getOption(argv, argv + argc, "-g");
-	bool  use_rmat   = chkOption(argv, argv + argc, "-g");
+	bool  use_gen    = chkOption(argv, argv + argc, "-g");
+	char* generator  = getOption(argv, argv + argc, "-g");
+	char* gen_param  = getOption(argv, argv + argc, "-p");
 	char* edges_file = getOption(argv, argv + argc, "-i");
 	char* algorithm  = getOption(argv, argv + argc, "-e");
-	uint  source     = getInt(argv, argv + argc, "-s", SOURCE);
+	uint  source     = getInt(argv, argv + argc, "-s", ROOT);
+
+	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
+	typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
+	typedef boost::erdos_renyi_iterator<boost::minstd_rand, graph_t> er_gen;
+	typedef boost::small_world_iterator<boost::minstd_rand, graph_t> sw_gen;
 
 	graph_t g;
 	uint total_vertices = 0, total_edges = 0;
-	if (use_rmat) {
-		uint scale_v = V, scale_e = E;
-		if (rmat_opt) SSCANF((rmat_opt, "%u:%u", &scale_v, &scale_e));
-		total_vertices = 1 << scale_v;
-		total_edges    = total_vertices * scale_e;
+	if (use_gen) {
 		boost::minstd_rand gen;
 		gen.seed((uint)time(NULL));
-		g = graph_t(
-			rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05),
-			rmat_gen(),
-			total_vertices);
+
+		if (!generator || !(strcmp(generator, "rmat") && strcmp(generator, "RMAT"))) {
+			if (!gen_param) gen_param = DEFAULT_RMAT;
+			uint scale_v, scale_e;
+			SSCANF((gen_param, "%u:%u", &scale_v, &scale_e));
+			total_vertices = 1 << scale_v;
+			total_edges    = total_vertices * scale_e;
+			g = graph_t(
+				rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05),
+				rmat_gen(),
+				total_vertices);
+		} else if (!(strcmp(generator, "er") && strcmp(generator, "ER"))) {
+			if (!gen_param) gen_param = DEFAULT_ER;
+			double probability;
+			SSCANF((gen_param, "%u:%lf", &total_vertices, &probability));
+			g = graph_t(er_gen(gen, total_vertices, probability), er_gen(), total_vertices);
+		} else if (!(strcmp(generator, "sw") && strcmp(generator, "sw"))) {
+			if (!gen_param) gen_param = DEFAULT_SW;
+			uint knn;
+			double probability;
+			SSCANF((gen_param, "%u:%u:%lf", &total_vertices, &knn, &probability));
+			g = graph_t(sw_gen(gen, total_vertices, knn, probability), sw_gen(), total_vertices);
+		} else {
+			cout << "Available generators: RMAT, ER, SW." << endl;
+		}
 	} else {
 		total_edges    = get_edges(edges_file, g);
 		total_vertices = num_vertices(g);
@@ -121,7 +149,7 @@ int main(int argc, char* argv[]) {
 			cout << "Available algorithms: BFS, DFS." << endl;
 		}
 	} else {
-		if (use_rmat)
+		if (use_gen)
 			print_edges(g);
 		else
 			print_graph(g);
