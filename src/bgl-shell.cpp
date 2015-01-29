@@ -119,12 +119,14 @@ int main(int argc, char* argv[]) {
 			double probability;
 			SSCANF((gen_param, "%u:%lf", &total_vertices, &probability));
 			g = graph_t(er_gen(gen, total_vertices, probability), er_gen(), total_vertices);
-		} else if (!(strcmp(generator, "sw") && strcmp(generator, "sw"))) {
+			total_edges = num_edges(g);
+		} else if (!(strcmp(generator, "sw") && strcmp(generator, "SW"))) {
 			if (!gen_param) gen_param = DEFAULT_SW;
 			uint knn;
 			double probability;
 			SSCANF((gen_param, "%u:%u:%lf", &total_vertices, &knn, &probability));
 			g = graph_t(sw_gen(gen, total_vertices, knn, probability), sw_gen(), total_vertices);
+			total_edges = num_edges(g);
 		} else {
 			cout << "Available generators: RMAT, ER, SW." << endl;
 		}
