@@ -61,10 +61,10 @@ uint get_edges(char* edges_file, Graph& g) {
 template <class Graph>
 void print_edges(const Graph& g) {
 	BGL_FORALL_EDGES_T(e, g, Graph)
-		cout << boost::source(e, g) << " " << boost::target(e, g) << endl;
+		cout << source(e, g) << " " << target(e, g) << endl;
 }
 
-#define ROOT 0
+#define DEFAULT_ROOT 0
 #define DEFAULT_RMAT "8:8"
 #define DEFAULT_ER   "256:0.05"
 #define DEFAULT_SW   "256:6:0.03"
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 		cout << " \t small-world parameters: " << DEFAULT_SW << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
 		cout << " -e:\t perform [BFS|DFS|SCC], etc." << endl;
-		cout << " -r:\t (" << ROOT << ") specify root vertex for graph traversal" << endl;
+		cout << " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
 		return 0;
 	}
 
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 	char* gen_param  = getOption(argv, argv + argc, "-p");
 	char* edges_file = getOption(argv, argv + argc, "-i");
 	char* algorithm  = getOption(argv, argv + argc, "-e");
-	uint  source     = getInt(argv, argv + argc, "-s", ROOT);
+	uint  v_root     = getInt(argv, argv + argc, "-s", DEFAULT_ROOT);
 
 	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
 	typedef boost::rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
@@ -138,10 +138,10 @@ int main(int argc, char* argv[]) {
 	if (algorithm) {
 		if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
 			custom_bfs_visitor b_v;
-			breadth_first_search(g, vertex(source, g), visitor(b_v));
+			breadth_first_search(g, vertex(v_root, g), visitor(b_v));
 		} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
 			custom_dfs_visitor d_v;
-			depth_first_search(g, root_vertex(vertex(source, g)).visitor(d_v));
+			depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
 		} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
 			vector<uint> component(num_vertices(g));
 			uint num = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
