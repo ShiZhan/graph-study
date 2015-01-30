@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
 			uint i = 0;
 			for (auto c: component) cout << i++ << " " << c << endl;
 		} else {
-			cout << "Available algorithms: BFS, DFS." << endl;
+			cout << "Algorithm [" << algorithm << "] not available." << endl;
 		}
 	} else {
 		if (use_gen)
