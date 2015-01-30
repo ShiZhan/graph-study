@@ -1,8 +1,8 @@
+include Makefile.config
+
 CC = g++
 
 CXXFLAGS = --std=c++11 -O3
-
-BOOST_DIR = c:/boost-src/
 
 USE_BOOST = -I$(BOOST_DIR)
 

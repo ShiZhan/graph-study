@@ -6,3 +6,5 @@ vs2012/Release/*
 vs2012/Debug/*
 vs2012/*/Release/*
 vs2012/*/Debug/*
+src/Makefile.config
+
