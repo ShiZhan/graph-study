@@ -1,8 +1,8 @@
 *.exe
-graph-study.v11.suo
-graph-study.opensdf
-graph-study.sdf
-*/Release/*
-*/Debug/*
-Release/*
-Debug/*
+vs2012/graph-study.v11.suo
+vs2012/graph-study.opensdf
+vs2012/graph-study.sdf
+vs2012/Release/*
+vs2012/Debug/*
+vs2012/*/Release/*
+vs2012/*/Debug/*
