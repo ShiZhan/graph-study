@@ -94,66 +94,63 @@ int main(int argc, char* argv[]) {
 	uint  v_root     = getInt(argv, argv + argc, "-s", DEFAULT_ROOT);
 
 	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
-	typedef rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
-	typedef erdos_renyi_iterator<boost::minstd_rand, graph_t> er_gen;
-	typedef small_world_iterator<boost::minstd_rand, graph_t> sw_gen;
 
-	graph_t g;
 	uint total_vertices = 0, total_edges = 0;
 	if (use_gen) {
 		boost::minstd_rand gen;
 		gen.seed((uint)time(NULL));
 
 		if (!generator || !(strcmp(generator, "rmat") && strcmp(generator, "RMAT"))) {
-			if (!gen_param) gen_param = DEFAULT_RMAT;
+			typedef rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
+			string param = gen_param ? gen_param : DEFAULT_RMAT;
 			uint scale_v, scale_e;
-			SSCANF((gen_param, "%u:%u", &scale_v, &scale_e));
+			SSCANF((param.c_str(), "%u:%u", &scale_v, &scale_e));
 			total_vertices = 1 << scale_v;
 			total_edges    = total_vertices * scale_e;
-			g = graph_t(
-				rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05),
-				rmat_gen(),
-				total_vertices);
+			auto it       = rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05);
+			auto it_last  = rmat_gen();
+			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
 		} else if (!(strcmp(generator, "er") && strcmp(generator, "ER"))) {
-			if (!gen_param) gen_param = DEFAULT_ER;
+			typedef erdos_renyi_iterator<boost::minstd_rand, graph_t> er_gen;
+			string param = gen_param ? gen_param : DEFAULT_ER;
 			double probability;
-			SSCANF((gen_param, "%u:%lf", &total_vertices, &probability));
-			g = graph_t(er_gen(gen, total_vertices, probability), er_gen(), total_vertices);
-			total_edges = num_edges(g);
+			SSCANF((param.c_str(), "%u:%lf", &total_vertices, &probability));
+			auto it       = er_gen(gen, total_vertices, probability);
+			auto it_last  = er_gen();
+			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
 		} else if (!(strcmp(generator, "sw") && strcmp(generator, "SW"))) {
-			if (!gen_param) gen_param = DEFAULT_SW;
+			typedef small_world_iterator<boost::minstd_rand, graph_t> sw_gen;
+			string param = gen_param ? gen_param : DEFAULT_SW;
 			uint knn;
 			double probability;
-			SSCANF((gen_param, "%u:%u:%lf", &total_vertices, &knn, &probability));
-			g = graph_t(sw_gen(gen, total_vertices, knn, probability), sw_gen(), total_vertices);
-			total_edges = num_edges(g);
+			SSCANF((param.c_str(), "%u:%u:%lf", &total_vertices, &knn, &probability));
+			auto it       = sw_gen(gen, total_vertices, knn, probability);
+			auto it_last  = sw_gen();
+			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
 		} else {
 			cout << "Available generators: RMAT, ER, SW." << endl;
 		}
 	} else {
-		total_edges    = get_edges(edges_file, g);
-		total_vertices = num_vertices(g);
-	}
+		graph_t g;
+		total_edges = get_edges(edges_file, g);
 
-	if (algorithm) {
-		if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
-			custom_bfs_visitor b_v;
-			breadth_first_search(g, vertex(v_root, g), visitor(b_v));
-		} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
-			custom_dfs_visitor d_v;
-			depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
-		} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
-			vector<uint> component(num_vertices(g));
-			uint num = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
-			uint i = 0;
-			for (auto c: component) cout << i++ << " " << c << endl;
+		if (algorithm) {
+			if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
+				custom_bfs_visitor b_v;
+				breadth_first_search(g, vertex(v_root, g), visitor(b_v));
+			} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
+				custom_dfs_visitor d_v;
+				depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
+			} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
+				vector<uint> component(num_vertices(g));
+				uint num = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+				uint i = 0;
+				for (auto c: component) cout << i++ << " " << c << endl;
+			} else {
+				cout << "Algorithm [" << algorithm << "] not available." << endl;
+			}
 		} else {
-			cout << "Algorithm [" << algorithm << "] not available." << endl;
-		}
-	} else {
-		if (use_gen)
-			print_edges(g);
-		else
 			print_graph(g);
+		}
 	}
 }
