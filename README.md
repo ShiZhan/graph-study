@@ -59,4 +59,15 @@ SSSP
 
 Single Source Shortest Path.
 
+BGL Shell
+---------
+
+Boost Graph Library wrapper, bring BGL functionalities to OS console. Currently include:
+
+1. generators: Recursive-MATrix (R-MAT), Erdos-Renyi (ER), Small-World (SW).
+2. algorithms: BFS, DFS, SCC.
+3. edge list input: file, console.
+
+For compiling with g++, use scripts/get-boost.sh to download and deploy boost library, modify Makefile.
+
 
