@@ -77,9 +77,9 @@ int main(int argc, char* argv[]) {
 		cout << " -h:\t ask for help" << endl;
 		cout << " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl;
 		cout << " -p:\t set graph generator parameters" << endl;
-		cout << " \t Recursive-MATrix: \t " << DEFAULT_RMAT << endl;
-		cout << " \t Erdos-Renyi: \t " << DEFAULT_ER << endl;
-		cout << " \t Small-World: \t " << DEFAULT_SW << endl;
+		cout << " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl;
+		cout << " \t   Erdos-Renyi:      " << DEFAULT_ER << endl;
+		cout << " \t   Small-World:      " << DEFAULT_SW << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
 		cout << " -e:\t perform [BFS|DFS|SCC], etc." << endl;
 		cout << " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
