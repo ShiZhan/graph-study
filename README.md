@@ -70,4 +70,9 @@ BGL Shell
 
 For compiling with g++, use scripts/get-boost.sh to download and deploy boost library, create Makefile.config.
 
+v-map
+-----
+
+Map vertex number by the given index.
+
 

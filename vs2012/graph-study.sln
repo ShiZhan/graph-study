@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dfs", "dfs\dfs.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgl-shell", "bgl-shell\bgl-shell.vcxproj", "{3930EA00-9D52-4E7B-A63F-DCF35F3E156D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "v-map", "v-map\v-map.vcxproj", "{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -55,6 +57,10 @@ Global
 		{3930EA00-9D52-4E7B-A63F-DCF35F3E156D}.Debug|Win32.Build.0 = Debug|Win32
 		{3930EA00-9D52-4E7B-A63F-DCF35F3E156D}.Release|Win32.ActiveCfg = Release|Win32
 		{3930EA00-9D52-4E7B-A63F-DCF35F3E156D}.Release|Win32.Build.0 = Release|Win32
+		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Debug|Win32.Build.0 = Debug|Win32
+		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Release|Win32.ActiveCfg = Release|Win32
+		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
