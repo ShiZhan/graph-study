@@ -36,17 +36,16 @@ int main (int argc, char* argv[]) {
 	char* v_map_file = getOption(argv, argv + argc, "-m");
 	char* edges_file = getOption(argv, argv + argc, "-i");
 
-	uint u, v;
 	string line;
 	v_map_t v_map;
 	if (v_map_file) {
 		ifstream map_fs(v_map_file);
 		if(map_fs) {
-			v = 0;
+			uint v_orig = 0, v_mapped = 0;
 			while (getline(map_fs, line)) {
-				SSCANF((line.c_str(), "%u", &u));
-				v_map[u] = v;
-				v++;
+				SSCANF((line.c_str(), "%u", &v_orig));
+				v_map[v_orig] = v_mapped;
+				v_mapped++;
 			}
 			map_fs.close();
 		}
