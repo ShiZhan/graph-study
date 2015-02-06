@@ -95,10 +95,14 @@ int main(int argc, char* argv[]) {
 		cout << " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl;
 		cout << " -p:\t set graph generator parameters" << endl;
 		cout << " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl;
-		cout << " \t   Erdos-Renyi:      " << DEFAULT_ER << endl;
-		cout << " \t   Small-World:      " << DEFAULT_SW << endl;
+		cout << " \t   Erdos-Renyi:      " << DEFAULT_ER   << endl;
+		cout << " \t   Small-World:      " << DEFAULT_SW   << endl;
 		cout << " -i:\t (cin) input edge list" << endl;
-		cout << " -e:\t perform [BFS|DFS|SCC], etc." << endl;
+		cout << " -e:\t perform [BFS|DFS|SCC|TS], etc." << endl;
+		cout << " \t   BFS: breadth-first traversal" << endl;
+		cout << " \t   DFS: depth-first traversal" << endl;
+		cout << " \t   SCC: strongly connected components" << endl;
+		cout << " \t   TS:  topological sort (on directed acyclic graph only)" << endl;
 		cout << " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
 		return 0;
 	}
