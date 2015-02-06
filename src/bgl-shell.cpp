@@ -2,11 +2,13 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <deque>
 #include <time.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/strong_components.hpp>
+#include <boost/graph/topological_sort.hpp>
 #include <boost/graph/rmat_graph_generator.hpp>
 #include <boost/graph/erdos_renyi_generator.hpp>
 #include <boost/graph/small_world_generator.hpp>
@@ -62,6 +64,21 @@ template <class Graph>
 void print_edges(const Graph& g) {
 	BGL_FORALL_EDGES_T(e, g, Graph)
 		cout << source(e, g) << " " << target(e, g) << endl;
+}
+
+template <class Graph>
+bool has_self_loop(const Graph& g) {
+	BGL_FORALL_EDGES_T(e, g, Graph)
+		if (source(e, g) == target(e, g)) return true;
+	return false;
+}
+
+template <class Graph>
+bool is_dag(const Graph& g) {
+	uint total_vertices = num_vertices(g);
+	vector<uint> component(total_vertices);
+	uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+	return (total_components == total_vertices) && !has_self_loop(g);
 }
 
 #define DEFAULT_ROOT 0
@@ -142,10 +159,17 @@ int main(int argc, char* argv[]) {
 				custom_dfs_visitor d_v;
 				depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
 			} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
-				vector<uint> component(num_vertices(g));
-				uint num = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+				total_vertices = num_vertices(g);
+				vector<uint> component(total_vertices);
+				uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
 				uint i = 0;
 				for (auto c: component) cout << i++ << " " << c << endl;
+			} else if (!(strcmp(algorithm, "ts") && strcmp(algorithm, "TS"))) {
+				if (is_dag(g)) {
+					deque<uint> topological_order;
+					topological_sort(g, front_inserter(topological_order));
+					for (auto o: topological_order) cout << o << endl;
+				} else cout << "not DAG" << endl;
 			} else {
 				cout << "Algorithm [" << algorithm << "] not available." << endl;
 			}
