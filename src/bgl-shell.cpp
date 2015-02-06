@@ -90,20 +90,20 @@ int main(int argc, char* argv[]) {
 	using namespace opt;
 
 	if (chkOption(argv, argv + argc, "-h")) {
-		cout << "bgl-shell -flag [option]" << endl;
-		cout << " -h:\t ask for help" << endl;
-		cout << " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl;
-		cout << " -p:\t set graph generator parameters" << endl;
-		cout << " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl;
-		cout << " \t   Erdos-Renyi:      " << DEFAULT_ER   << endl;
-		cout << " \t   Small-World:      " << DEFAULT_SW   << endl;
-		cout << " -i:\t (cin) input edge list" << endl;
-		cout << " -e:\t perform [BFS|DFS|SCC|TS], etc." << endl;
-		cout << " \t   BFS: breadth-first traversal" << endl;
-		cout << " \t   DFS: depth-first traversal" << endl;
-		cout << " \t   SCC: strongly connected components" << endl;
-		cout << " \t   TS:  topological sort (on directed acyclic graph only)" << endl;
-		cout << " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
+		cout << "bgl-shell [options]" << endl
+			<< " -h:\t ask for help" << endl
+			<< " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl
+			<< " -p:\t set graph generator parameters" << endl
+			<< " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl
+			<< " \t   Erdos-Renyi:      " << DEFAULT_ER   << endl
+			<< " \t   Small-World:      " << DEFAULT_SW   << endl
+			<< " -i:\t (cin) input edge list" << endl
+			<< " -e:\t perform [BFS|DFS|SCC|TS], etc." << endl
+			<< " \t   BFS: breadth-first traversal" << endl
+			<< " \t   DFS: depth-first traversal" << endl
+			<< " \t   SCC: strongly connected components" << endl
+			<< " \t   TS:  topological sort (on directed acyclic graph only)" << endl
+			<< " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
 		return 0;
 	}
 

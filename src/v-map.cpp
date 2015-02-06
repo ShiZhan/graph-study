@@ -26,10 +26,10 @@ int main (int argc, char* argv[]) {
 	using namespace opt;
 
 	if (chkOption(argv, argv + argc, "-h")) {
-		cout << "v-map [options]" << endl;
-		cout << " -h:\t ask for help" << endl;
-		cout << " -m:\t vertex mapping file" << endl;
-		cout << " -i:\t get edges from (cin)" << endl;
+		cout << "v-map [options]" << endl
+			<< " -h:\t ask for help" << endl
+			<< " -m:\t vertex mapping file" << endl
+			<< " -i:\t get edges from (cin)" << endl;
 		return 0;
 	}
 
