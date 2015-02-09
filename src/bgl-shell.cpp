@@ -74,6 +74,11 @@ bool has_self_loop(const Graph& g) {
 }
 
 template <class Graph>
+uint k_cores(const Graph& g) {
+	return 0;
+}
+
+template <class Graph>
 bool is_dag(const Graph& g) {
 	uint total_vertices = num_vertices(g);
 	vector<uint> component(total_vertices);
