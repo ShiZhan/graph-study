@@ -12,6 +12,7 @@
 #include <boost/graph/rmat_graph_generator.hpp>
 #include <boost/graph/erdos_renyi_generator.hpp>
 #include <boost/graph/small_world_generator.hpp>
+#include <boost/graph/plod_generator.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/random/linear_congruential.hpp>
 #include "options.h"
@@ -74,11 +75,6 @@ bool has_self_loop(const Graph& g) {
 }
 
 template <class Graph>
-uint k_cores(const Graph& g) {
-	return 0;
-}
-
-template <class Graph>
 bool is_dag(const Graph& g) {
 	uint total_vertices = num_vertices(g);
 	vector<uint> component(total_vertices);
@@ -90,6 +86,7 @@ bool is_dag(const Graph& g) {
 #define DEFAULT_RMAT "8:8"
 #define DEFAULT_ER   "256:0.05"
 #define DEFAULT_SW   "256:6:0.03"
+#define DEFAULT_SF   "256:2.7:256"
 
 int main(int argc, char* argv[]) {
 	using namespace opt;
@@ -98,11 +95,12 @@ int main(int argc, char* argv[]) {
 		cout << "bgl-shell [options]" << endl
 			<< " -h:\t ask for help" << endl << endl
 			<< " generators" << endl
-			<< " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl
+			<< " -g:\t (RMAT) use generator [RMAT|ER|SW|SF]" << endl
 			<< " -p:\t set graph generator parameters" << endl
 			<< " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl
 			<< " \t   Erdos-Renyi:      " << DEFAULT_ER   << endl
-			<< " \t   Small-World:      " << DEFAULT_SW   << endl << endl
+			<< " \t   Small-World:      " << DEFAULT_SW   << endl
+			<< " \t   Scale-Free:       " << DEFAULT_SF   << endl << endl
 			<< " algorithms" << endl
 			<< " default to print adjacency list" << endl
 			<< " -e:\t perform [BFS|DFS|SCC|TS], etc." << endl
@@ -156,8 +154,17 @@ int main(int argc, char* argv[]) {
 			auto it       = sw_gen(gen, total_vertices, knn, probability);
 			auto it_last  = sw_gen();
 			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
+		} else if (!(strcmp(generator, "sf") && strcmp(generator, "SF"))) {
+			typedef plod_iterator<boost::minstd_rand, graph_t> sf_gen;
+			string param = gen_param ? gen_param : DEFAULT_SF;
+			double alpha;
+			uint beta;
+			SSCANF((param.c_str(), "%u:%lf:%u", &total_vertices, &alpha, &beta));
+			auto it       = sf_gen(gen, total_vertices, alpha, beta);
+			auto it_last  = sf_gen();
+			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
 		} else {
-			cout << "Available generators: RMAT, ER, SW." << endl;
+			cout << "Available generators: RMAT, ER, SW, SF." << endl;
 		}
 	} else {
 		graph_t g;
