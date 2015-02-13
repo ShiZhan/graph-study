@@ -96,18 +96,21 @@ int main(int argc, char* argv[]) {
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << "bgl-shell [options]" << endl
-			<< " -h:\t ask for help" << endl
+			<< " -h:\t ask for help" << endl << endl
+			<< " generators" << endl
 			<< " -g:\t (RMAT) use generator [RMAT|ER|SW]" << endl
 			<< " -p:\t set graph generator parameters" << endl
 			<< " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl
 			<< " \t   Erdos-Renyi:      " << DEFAULT_ER   << endl
-			<< " \t   Small-World:      " << DEFAULT_SW   << endl
-			<< " -i:\t (cin) input edge list" << endl
+			<< " \t   Small-World:      " << DEFAULT_SW   << endl << endl
+			<< " algorithms" << endl
+			<< " default to print adjacency list" << endl
 			<< " -e:\t perform [BFS|DFS|SCC|TS], etc." << endl
 			<< " \t   BFS: breadth-first traversal" << endl
 			<< " \t   DFS: depth-first traversal" << endl
 			<< " \t   SCC: strongly connected components" << endl
 			<< " \t   TS:  topological sort (on directed acyclic graph only)" << endl
+			<< " -i:\t (cin) input edge list" << endl
 			<< " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
 		return 0;
 	}
