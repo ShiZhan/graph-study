@@ -7,7 +7,7 @@ CXXFLAGS = --std=c++11 -O3
 USE_BOOST = -I$(BOOST_DIR)
 
 all:
-	make generators algorithms bgl-shell
+	make generators algorithms bgl-shell v-map
 
 generators:
 	make generator edge-sort seq-to-csr seq-to-edges
@@ -39,5 +39,8 @@ dfs: dfs.cpp
 bgl-shell: bgl-shell.cpp
 	$(CC) bgl-shell.cpp $(CXXFLAGS) $(USE_BOOST) -o bgl-shell
 
+v-map: v-map.cpp
+	$(CC) v-map.cpp $(CXXFLAGS) -o v-map
+
 clean:
-	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp bfs dfs bgl-shell
+	rm *.exe *.o generator edge-sort seq-to-csr seq-to-edges sssp bfs dfs bgl-shell v-map
