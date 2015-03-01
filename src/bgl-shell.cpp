@@ -63,6 +63,33 @@ uint get_edges(char* edges_file, Graph& g) {
 }
 
 template <class Graph>
+int graph_op(Graph& g, char* algorithm, uint v_root) {
+	if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
+		custom_bfs_visitor b_v;
+		breadth_first_search(g, vertex(v_root, g), visitor(b_v));
+	} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
+		custom_dfs_visitor d_v;
+		depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
+	} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
+		uint total_vertices = num_vertices(g);
+		vector<uint> component(total_vertices);
+		uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+		uint i = 0;
+		for (auto c: component) cout << i++ << " " << c << endl;
+	} else if (!(strcmp(algorithm, "ts") && strcmp(algorithm, "TS"))) {
+		if (is_dag(g)) {
+			deque<uint> topological_order;
+			topological_sort(g, front_inserter(topological_order));
+			for (auto o: topological_order) cout << o << endl;
+		} else cout << "not DAG" << endl;
+	} else {
+		cout << "Algorithm [" << algorithm << "] not available." << endl;
+		return -1;
+	}
+	return 0;
+}
+
+template <class Graph>
 void print_edges(const Graph& g) {
 	BGL_FORALL_EDGES_T(e, g, Graph)
 		cout << source(e, g) << " " << target(e, g) << endl;
@@ -81,13 +108,6 @@ bool is_dag(const Graph& g) {
 	vector<uint> component(total_vertices);
 	uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
 	return (total_components == total_vertices) && !has_self_loop(g);
-}
-
-template <class Graph, class Vertex>
-uint k_cores(const Graph& g, map<Vertex, uint>& cores) {
-	BGL_FORALL_VERTICES(v, g, Graph)
-		cores[v] = out_degree(v, g);
-	return 0;
 }
 
 #define DEFAULT_ROOT 0
@@ -116,7 +136,6 @@ int main(int argc, char* argv[]) {
 			<< " \t   DFS: depth-first traversal" << endl
 			<< " \t   SCC: strongly connected components" << endl
 			<< " \t   TS:  topological sort (on directed acyclic graph only)" << endl
-			<< " \t   KC:  k-core decomposition" << endl
 			<< " -i:\t (cin) input edge list" << endl
 			<< " -r:\t (" << DEFAULT_ROOT << ") specify root vertex for graph traversal" << endl;
 		return 0;
@@ -129,7 +148,8 @@ int main(int argc, char* argv[]) {
 	char* algorithm  = getOption(argv, argv + argc, "-e");
 	uint  v_root     = getInt(argv, argv + argc, "-s", DEFAULT_ROOT);
 
-	typedef adjacency_list<setS, vecS, directedS, no_property> graph_t;
+	typedef adjacency_list<setS, vecS,   directedS, no_property> graph_t;
+	typedef adjacency_list<setS, vecS, undirectedS, no_property> graph_u_t;
 
 	uint total_vertices = 0, total_edges = 0;
 	if (use_gen) {
@@ -180,31 +200,7 @@ int main(int argc, char* argv[]) {
 		total_edges = get_edges(edges_file, g);
 
 		if (algorithm) {
-			if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
-				custom_bfs_visitor b_v;
-				breadth_first_search(g, vertex(v_root, g), visitor(b_v));
-			} else if (!(strcmp(algorithm, "dfs") && strcmp(algorithm, "DFS"))) {
-				custom_dfs_visitor d_v;
-				depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
-			} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
-				total_vertices = num_vertices(g);
-				vector<uint> component(total_vertices);
-				uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
-				uint i = 0;
-				for (auto c: component) cout << i++ << " " << c << endl;
-			} else if (!(strcmp(algorithm, "ts") && strcmp(algorithm, "TS"))) {
-				if (is_dag(g)) {
-					deque<uint> topological_order;
-					topological_sort(g, front_inserter(topological_order));
-					for (auto o: topological_order) cout << o << endl;
-				} else cout << "not DAG" << endl;
-			} else if (!(strcmp(algorithm, "kc") && strcmp(algorithm, "KC"))) {
-				map<graph_t::vertex_descriptor, uint> cores;
-				uint num_kc = k_cores(g, cores);
-				for (auto c: cores) cout << c.first << " " << c.second << endl;
-			} else {
-				cout << "Algorithm [" << algorithm << "] not available." << endl;
-			}
+			graph_op(g, algorithm, v_root);
 		} else {
 			print_graph(g);
 		}
