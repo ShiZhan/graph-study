@@ -62,6 +62,65 @@ uint get_edges(char* edges_file, Graph& g) {
 	return total;
 }
 
+int graph_gen(char* generator, char* parameters) {
+	uint total_vertices = 256, total_edges = 0;
+	boost::minstd_rand gen;
+	gen.seed((uint)time(NULL));
+
+	if (!generator || !(strcmp(generator, "rmat") && strcmp(generator, "RMAT"))) {
+		typedef rmat_iterator<boost::minstd_rand, adjacency_list<>> rmat_gen;
+		uint scale_v = 8, scale_e = 8;
+		if (parameters) SSCANF((parameters, "%u:%u", &scale_v, &scale_e));
+		total_vertices = 1 << scale_v;
+		total_edges    = total_vertices * scale_e;
+		auto it       = rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05);
+		auto it_last  = rmat_gen();
+		for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
+	} else if (!(strcmp(generator, "er") && strcmp(generator, "ER"))) {
+		typedef erdos_renyi_iterator<boost::minstd_rand, adjacency_list<>> er_gen;
+		double probability = 0.05;
+		if (parameters) SSCANF((parameters, "%u:%lf", &total_vertices, &probability));
+		auto it       = er_gen(gen, total_vertices, probability);
+		auto it_last  = er_gen();
+		for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
+	} else if (!(strcmp(generator, "sw") && strcmp(generator, "SW"))) {
+		typedef small_world_iterator<boost::minstd_rand, adjacency_list<>> sw_gen;
+		uint   knn         = 6;
+		double probability = 0.03;
+		if (parameters) SSCANF((parameters, "%u:%u:%lf", &total_vertices, &knn, &probability));
+		auto it       = sw_gen(gen, total_vertices, knn, probability);
+		auto it_last  = sw_gen();
+		for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
+	} else if (!(strcmp(generator, "sf") && strcmp(generator, "SF"))) {
+		typedef plod_iterator<boost::minstd_rand, adjacency_list<>> sf_gen;
+		double alpha = 2.7;
+		uint   beta  = 256;
+		if (parameters) SSCANF((parameters, "%u:%lf:%u", &total_vertices, &alpha, &beta));
+		auto it       = sf_gen(gen, total_vertices, alpha, beta);
+		auto it_last  = sf_gen();
+		for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
+	} else {
+		cout << "Available generators: RMAT, ER, SW, SF." << endl;
+		return -1;
+	}
+	return 0;
+}
+
+template <class Graph>
+bool has_self_loop(const Graph& g) {
+	BGL_FORALL_EDGES_T(e, g, Graph)
+		if (source(e, g) == target(e, g)) return true;
+	return false;
+}
+
+template <class Graph>
+bool is_dag(const Graph& g) {
+	uint total_vertices = num_vertices(g);
+	vector<uint> component(total_vertices);
+	uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+	return (total_components == total_vertices) && !has_self_loop(g);
+}
+
 template <class Graph>
 int graph_op(Graph& g, char* algorithm, uint v_root) {
 	if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
@@ -95,26 +154,7 @@ void print_edges(const Graph& g) {
 		cout << source(e, g) << " " << target(e, g) << endl;
 }
 
-template <class Graph>
-bool has_self_loop(const Graph& g) {
-	BGL_FORALL_EDGES_T(e, g, Graph)
-		if (source(e, g) == target(e, g)) return true;
-	return false;
-}
-
-template <class Graph>
-bool is_dag(const Graph& g) {
-	uint total_vertices = num_vertices(g);
-	vector<uint> component(total_vertices);
-	uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
-	return (total_components == total_vertices) && !has_self_loop(g);
-}
-
 #define DEFAULT_ROOT 0
-#define DEFAULT_RMAT "8:8"
-#define DEFAULT_ER   "256:0.05"
-#define DEFAULT_SW   "256:6:0.03"
-#define DEFAULT_SF   "256:2.7:256"
 
 int main(int argc, char* argv[]) {
 	using namespace opt;
@@ -125,10 +165,12 @@ int main(int argc, char* argv[]) {
 			<< " generators" << endl
 			<< " -g:\t (RMAT) use generator [RMAT|ER|SW|SF]" << endl
 			<< " -p:\t set graph generator parameters" << endl
-			<< " \t   Recursive-MATrix: " << DEFAULT_RMAT << endl
-			<< " \t   Erdos-Renyi:      " << DEFAULT_ER   << endl
-			<< " \t   Small-World:      " << DEFAULT_SW   << endl
-			<< " \t   Scale-Free:       " << DEFAULT_SF   << endl << endl
+			<< " \t   Generator         Parameters"  << endl
+			<< " \t   ---------         ----------"  << endl
+			<< " \t   Recursive-MATrix  8:8"         << endl
+			<< " \t   Erdos-Renyi       256:0.05"    << endl
+			<< " \t   Small-World       256:6:0.03"  << endl
+			<< " \t   Scale-Free        256:2.7:256" << endl << endl
 			<< " algorithms" << endl
 			<< " default to print adjacency list" << endl
 			<< " -e:\t perform [BFS|DFS|SCC|TS|KC], etc." << endl
@@ -151,53 +193,11 @@ int main(int argc, char* argv[]) {
 	typedef adjacency_list<setS, vecS,   directedS, no_property> graph_t;
 	typedef adjacency_list<setS, vecS, undirectedS, no_property> graph_u_t;
 
-	uint total_vertices = 0, total_edges = 0;
 	if (use_gen) {
-		boost::minstd_rand gen;
-		gen.seed((uint)time(NULL));
-
-		if (!generator || !(strcmp(generator, "rmat") && strcmp(generator, "RMAT"))) {
-			typedef rmat_iterator<boost::minstd_rand, graph_t> rmat_gen;
-			string param = gen_param ? gen_param : DEFAULT_RMAT;
-			uint scale_v, scale_e;
-			SSCANF((param.c_str(), "%u:%u", &scale_v, &scale_e));
-			total_vertices = 1 << scale_v;
-			total_edges    = total_vertices * scale_e;
-			auto it       = rmat_gen(gen, total_vertices, total_edges, 0.57, 0.19, 0.19, 0.05);
-			auto it_last  = rmat_gen();
-			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
-		} else if (!(strcmp(generator, "er") && strcmp(generator, "ER"))) {
-			typedef erdos_renyi_iterator<boost::minstd_rand, graph_t> er_gen;
-			string param = gen_param ? gen_param : DEFAULT_ER;
-			double probability;
-			SSCANF((param.c_str(), "%u:%lf", &total_vertices, &probability));
-			auto it       = er_gen(gen, total_vertices, probability);
-			auto it_last  = er_gen();
-			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
-		} else if (!(strcmp(generator, "sw") && strcmp(generator, "SW"))) {
-			typedef small_world_iterator<boost::minstd_rand, graph_t> sw_gen;
-			string param = gen_param ? gen_param : DEFAULT_SW;
-			uint knn;
-			double probability;
-			SSCANF((param.c_str(), "%u:%u:%lf", &total_vertices, &knn, &probability));
-			auto it       = sw_gen(gen, total_vertices, knn, probability);
-			auto it_last  = sw_gen();
-			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
-		} else if (!(strcmp(generator, "sf") && strcmp(generator, "SF"))) {
-			typedef plod_iterator<boost::minstd_rand, graph_t> sf_gen;
-			string param = gen_param ? gen_param : DEFAULT_SF;
-			double alpha;
-			uint beta;
-			SSCANF((param.c_str(), "%u:%lf:%u", &total_vertices, &alpha, &beta));
-			auto it       = sf_gen(gen, total_vertices, alpha, beta);
-			auto it_last  = sf_gen();
-			for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
-		} else {
-			cout << "Available generators: RMAT, ER, SW, SF." << endl;
-		}
+		graph_gen(generator, gen_param);
 	} else {
 		graph_t g;
-		total_edges = get_edges(edges_file, g);
+		get_edges(edges_file, g);
 
 		if (algorithm) {
 			graph_op(g, algorithm, v_root);
