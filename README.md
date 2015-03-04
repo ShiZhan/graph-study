@@ -64,15 +64,19 @@ BGL Shell
 
 [Boost Graph Library](http://www.boost.org/doc/libs/1_57_0/libs/graph/doc/index.html) wrapper, bring BGL functionalities to OS console. Currently include:
 
-1. generators: Recursive-MATrix (R-MAT), Erdos-Renyi (ER), Small-World (SW).
-2. algorithms: BFS, DFS, SCC.
+1. generators: Recursive-MATrix (R-MAT), Erdos-Renyi (ER), Small-World (SW), Scale-Free (SF).
+2. algorithms: BFS, DFS, Strongly Connected Components (SCC), Topologial Sort (TC).
 3. edge list input: file, console.
 
 For compiling with g++, use scripts/get-boost.sh to download and deploy boost library, create Makefile.config.
 
+Use bgl-shell -h for more usage information.
+
 v-map
 -----
 
-Map vertex number by the given index.
+Map vertex number by the given index, e.g.: data-sample/rmat-8-8.(bfs|dfs).
 
+cat data-sample/rmat-8-8.edges | v-map -m data-sample/rmat-8-8.dfs
 
+v-map -m data-sample/rmat-8-8.dfs -i data-sample/rmat-8-8.edges
