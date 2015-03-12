@@ -200,7 +200,6 @@ int undir_graph_op(Graph& g, char* algorithm, uint v_root) {
 		king_ordering(g, king_order.rbegin());
 		for (auto ko: king_order) cout << ko << endl;
 	} else if(!(strcmp(algorithm, "so") && strcmp(algorithm, "SO"))) {
-		//the graph need state some properties
 		vector<uint> sloan_order(num_vertices(g));
 		sloan_ordering(g, sloan_order.begin(), get(vertex_color, g), make_degree_map(g), get(vertex_priority, g));
 		for (auto so: sloan_order) cout << so <<endl;
@@ -219,9 +218,11 @@ void print_edges(const Graph& g) {
 
 int main(int argc, char* argv[]) {
 	using namespace opt;
+
 	const char* usage =
 		"bgl-shell [options]\n"
-		" -h:\t ask for help\n\n"
+		" -h:\t ask for help\n"
+		"\n"
 		" generators\n"
 		" -g:\t (RMAT) use generator [RMAT|ER|SW|SF]\n"
 		" -p:\t set graph generator parameters\n"
@@ -230,7 +231,8 @@ int main(int argc, char* argv[]) {
 		" \t   Recursive-MATrix  8:8\n"
 		" \t   Erdos-Renyi       256:0.05\n"
 		" \t   Small-World       256:6:0.03\n"
-		" \t   Scale-Free        256:2.7:256\n\n"
+		" \t   Scale-Free        256:2.7:256\n"
+		"\n"
 		" algorithms\n"
 		" default to print adjacency list\n"
 		" -e:\t perform [BFS|DFS|SCC|TS|CMO|KO|SO], etc.\n"
@@ -243,7 +245,8 @@ int main(int argc, char* argv[]) {
 		" \t   SO:  sloan ordering                (undirected)\n"
 		" -i:\t (cin) input edge list\n"
 		" -u:\t treat input edge list as undirected\n"
-		" -r:\t specify root vertex for graph traversal\n";
+		" -r:\t specify root vertex for graph traversal\n"
+		"\n";
 
 	if (chkOption(argv, argv + argc, "-h")) {
 		cout << usage;
