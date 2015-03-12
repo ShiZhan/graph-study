@@ -264,9 +264,7 @@ int main(int argc, char* argv[]) {
 
 	if (use_gen) {
 		graph_gen(generator, gen_param); 
-	}
-
-	if (is_undir) {
+	} else if (is_undir) {
 		graph_u_p_t g;
 		get_edges(edges_file, g);
 		if(algorithm) {
