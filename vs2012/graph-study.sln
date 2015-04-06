@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgl-shell", "bgl-shell\bgl-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "v-map", "v-map\v-map.vcxproj", "{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "streaming-sampling", "streaming-sampling\streaming-sampling.vcxproj", "{4E8C1D63-3A88-47EA-A735-787F10AB22DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,10 @@ Global
 		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Debug|Win32.Build.0 = Debug|Win32
 		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Release|Win32.ActiveCfg = Release|Win32
 		{A42D7652-22D7-40A2-A6D9-DAA5B1AE7500}.Release|Win32.Build.0 = Release|Win32
+		{4E8C1D63-3A88-47EA-A735-787F10AB22DD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E8C1D63-3A88-47EA-A735-787F10AB22DD}.Debug|Win32.Build.0 = Debug|Win32
+		{4E8C1D63-3A88-47EA-A735-787F10AB22DD}.Release|Win32.ActiveCfg = Release|Win32
+		{4E8C1D63-3A88-47EA-A735-787F10AB22DD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
