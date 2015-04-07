@@ -41,5 +41,18 @@ namespace opt {
 		}
 		return value;
 	}
+
+	double getDouble(char** begin, char** end, const std::string& option, double d) {
+		double value = d;
+		char* str = getOption(begin, end, option);
+		if (str) {
+			try {
+				SSCANF((str, "%lf", &value));
+			} catch(std::exception& e) {
+				std::cerr << e.what() << std::endl;
+			}
+		}
+		return value;
+	}
 }
 #endif
