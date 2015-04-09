@@ -21,34 +21,34 @@ int main (int argc, char* argv[]) {
 		return 0;
 	}
 
-	char* prefix_str = getOption(argv, argv + argc, "-p");
-	u64   root       = getU64(argv, argv + argc, "-r", ROOT);
+	char*      prefix_str = getOption(argv, argv + argc, "-p");
+	uint64_t   root       = getUInt64(argv, argv + argc, "-r", ROOT);
 
 	string prefix = prefix_str ? prefix_str : PREFIX; // get prefix
 
 	CSR g;
-	u64 vertex_total = g.load(prefix);
+	uint64_t vertex_total = g.load(prefix);
 	if (vertex_total == 0) {
 		cerr << "CSRGraph load error!" << endl;
 		return -1;
 	}
 
 	bool* visited = new bool[vertex_total+1];
-	u64 i;
+	uint64_t i;
 	for (i=0; i<=vertex_total; i++) visited[i] = false;
 	while (root<vertex_total) {
-		stack<u64> traversal;
+		stack<uint64_t> traversal;
 		traversal.push(root);
-		vector<u64> neighbours;
+		vector<uint64_t> neighbours;
 		while(!traversal.empty()) {
 			i = traversal.top();
 			traversal.pop();
 			if (!visited[i]) {
 				cout << i << endl;
 				visited[i] = true;
-				u64 total = g.getNeighbours(i, neighbours);
+				uint64_t total = g.getNeighbours(i, neighbours);
 				if (total) {
-					for (u64 n: neighbours) traversal.push(n);
+					for (uint64_t n: neighbours) traversal.push(n);
 					neighbours.clear();
 				}
 			}

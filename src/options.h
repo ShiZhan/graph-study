@@ -2,6 +2,7 @@
 #define options_h
 #include <string>
 #include <algorithm>
+#include <stdint.h>
 #include "utils.h"
 
 namespace opt {
@@ -29,8 +30,8 @@ namespace opt {
 		return value;
 	}
 
-	u64 getU64(char** begin, char** end, const std::string& option, u64 d) {
-		u64 value = d;
+	uint64_t getUInt64(char** begin, char** end, const std::string& option, uint64_t d) {
+		uint64_t value = d;
 		char* str = getOption(begin, end, option);
 		if (str) {
 			try {

@@ -19,12 +19,12 @@ int main (int argc, char* argv[]) {
 		return 0;
 	}
 
-	u16 diffuse   = getInt(argv, argv + argc, "-d", DIFFUSE);
-	u16 alignment = getInt(argv, argv + argc, "-a", ALIGNMENT);
+	uint16_t diffuse   = getInt(argv, argv + argc, "-d", DIFFUSE);
+	uint16_t alignment = getInt(argv, argv + argc, "-a", ALIGNMENT);
 
     string line;
-	u64 value = 0;
-	list<u64> neighbours;
+	uint64_t value = 0;
+	list<uint64_t> neighbours;
 	while (getline(cin, line)) { // read sequence
 		try {
 			int base = (line.compare(0, 2, "0x"))?16:10; // hex string check
@@ -34,9 +34,9 @@ int main (int argc, char* argv[]) {
 			value = 0;
 		}
 		// generate a vertex from current value within a certain range (2^alignment)
-		u64 aligned = value >> alignment;
+		uint64_t aligned = value >> alignment;
 		// edge: past n vertices to current vertex, assuming certain relationship
-		for (u64 n: neighbours) cout << n << " " << aligned << endl;
+		for (uint64_t n: neighbours) cout << n << " " << aligned << endl;
 		// add current vertex to past n (<= diffuse) vertices
 		neighbours.push_front(aligned);
 		if (neighbours.size() > diffuse) neighbours.pop_back();

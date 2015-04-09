@@ -29,18 +29,18 @@ int main (int argc, char* argv[]) {
 
 	// write v sequence to ci, count u run length and write to ri.
 	string line;
-	u64 u = 0, v = 0, u_prev = 0, offset = 0;
-	ri.write((char *)&offset, sizeof(u64));
+	uint64_t u = 0, v = 0, u_prev = 0, offset = 0;
+	ri.write((char *)&offset, sizeof(uint64_t));
 	while (getline(cin, line)) {
 		SSCANF((line.c_str(), "%llu %llu", &u, &v));
-		ci.write((char *)&v, sizeof(u64));
+		ci.write((char *)&v, sizeof(uint64_t));
 		if(u > u_prev) {
-			for (int i=0; i<(u-u_prev); i++) ri.write((char *)&offset, sizeof(u64));
+			for (int i=0; i<(u-u_prev); i++) ri.write((char *)&offset, sizeof(uint64_t));
 			u_prev = u;
 		}
 		offset++;
 	}
-	ri.write((char *)&offset, sizeof(u64));
+	ri.write((char *)&offset, sizeof(uint64_t));
 
 	ci.close();
 	ri.close();

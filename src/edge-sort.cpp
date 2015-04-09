@@ -11,9 +11,9 @@
 
 class Edge {
 public:
-	u64 n[2];
+	uint64_t n[2];
 	Edge () { n[0] = -1; n[1] = -1; }
-	Edge (u64 u, u64 v) { n[0] = u; n[1] = v; }
+	Edge (uint64_t u, uint64_t v) { n[0] = u; n[1] = v; }
 
 	bool operator < (const Edge &e) const {
 		return (n[0] == e.n[0]) ? (n[1] < e.n[1]) : (n[0] < e.n[0]);
@@ -30,20 +30,20 @@ public:
 
 class Chunk: public Edge {
 public:
-	Chunk (u64 start, u64 size, std::fstream &f):
+	Chunk (uint64_t start, uint64_t size, std::fstream &f):
 		start(start), size(size), f(f) { offset = start; end = start + size; }
 
-	u64 next() {
+	uint64_t next() {
 		if (offset == end) return 0;
 		else {
-			u64 address = offset << 4; // multiply by sizeof(u64)*2
+			uint64_t address = offset << 4; // multiply by sizeof(uint64_t)*2
 			f.seekg(address);
-			f.read((char*)n, sizeof(u64)*2);
+			f.read((char*)n, sizeof(uint64_t)*2);
 			return ++offset;
 		}
 	}
 private:
-	u64 start, end, size, offset;
+	uint64_t start, end, size, offset;
 	std::fstream &f;
 };
 
@@ -63,16 +63,16 @@ int main (int argc, char* argv[]) {
 		return 0;
 	}
 
-	u64 chunk_limit = 1 << getInt(argv, argv + argc, "-c", CHUNK_SCALE);
-	bool use_tempfile = chkOption(argv, argv + argc, "-c");
+	uint64_t chunk_limit  = 1 << getInt(argv, argv + argc, "-c", CHUNK_SCALE);
+	bool     use_tempfile = chkOption(argv, argv + argc, "-c");
 
 	string line;
-	u64 u, v;
+	uint64_t u, v;
 	vector<Edge> edges;
 
 	if (use_tempfile) {
 		fstream temp_file(_TEMP_FILE_, ios::trunc|ios::in|ios::out|ios::binary);
-		u64 chunk_offset = 0, chunk_size = 0;
+		uint64_t chunk_offset = 0, chunk_size = 0;
 		list<Chunk> chunks; // all [chunk_total] chunks merge indices
 
 		bool more = true;
@@ -87,7 +87,7 @@ int main (int argc, char* argv[]) {
 			chunk_size = edges.size();
 			if ((!more && chunk_size > 0) || (chunk_size >= chunk_limit)) {
 				sort(edges.begin(), edges.end());
-				for (Edge e: edges) temp_file.write((char*)e.n, sizeof(u64)*2);
+				for (Edge e: edges) temp_file.write((char*)e.n, sizeof(uint64_t)*2);
 				edges.clear();
 				chunks.push_back(Chunk(chunk_offset, chunk_size, temp_file));
 				chunk_offset += chunk_size;

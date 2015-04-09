@@ -6,50 +6,50 @@
 #include "utils.h"
 
 class BidirectionalGraph {
-	typedef std::map<uint, std::set<uint>> graph_t;
+	typedef std::map<uint64_t, std::set<uint64_t>> graph_t;
 private:
 	graph_t g;
 	graph_t::iterator i, j;
 public:
-	void add_edge(uint u, uint v) {
+	void add_edge(uint64_t u, uint64_t v) {
 		if (u != v) {
 			g[u].insert(v);
 			g[v].insert(u);
 		}
 	}
 
-	void remove_edge(uint u, uint v) {
+	void remove_edge(uint64_t u, uint64_t v) {
 		i = g.find(u); j = g.end(); if (i != j) i->second.erase(v);
 		i = g.find(v); j = g.end(); if (i != j) i->second.erase(u);
 	}
 
-	void remove_vertex(uint v) {
-		for (uint n: g[v]) g[n].erase(v);
+	void remove_vertex(uint64_t v) {
+		for (uint64_t n: g[v]) g[n].erase(v);
 		g[v].clear();// delete &g[v];
 		g.erase(v);
 	}
 
-	uint sum_vertices() {
+	uint64_t sum_vertices() {
 		return g.size();
 	}
 
-	uint sum_edges() {
-		uint sum = 0;
+	uint64_t sum_edges() {
+		uint64_t sum = 0;
 		for (auto s: g) sum += s.second.size();
 		return (sum / 2);
 	}
 
-	uint degree(uint v) {
+	uint64_t degree(uint64_t v) {
 		return g[v].size();
 	}
 
-	bool isolate(uint v) {
+	bool isolate(uint64_t v) {
 		return g[v].empty();
 	}
 
 	void print_edges() {
 		for (auto s: g) {
-			for (uint n: s.second) {
+			for (uint64_t n: s.second) {
 				std::cout << s.first << " " << n << std::endl;
 			}
 		}
@@ -58,7 +58,7 @@ public:
 	void print_vertices() {
 		for (auto s: g) {
 			std::cout << s.first;
-			for (uint n: s.second) {
+			for (uint64_t n: s.second) {
 				std::cout << " " << n;
 			}
 			std::cout << std::endl;
@@ -84,15 +84,15 @@ int main (int argc, char* argv[]) {
 		return 0;
 	}
 
-	uint   size_max = getInt(argv, argv + argc, "-s", 1024 * 8);
-	double ratio    = getDouble(argv, argv + argc, "-r", 0);
-	char*  policy   = getOption(argv, argv + argc, "-p");
-	bool   show_log = chkOption(argv, argv + argc, "-l");
+	uint64_t size_max = getUInt64(argv, argv + argc, "-s", 1024 * 8);
+	double   ratio    = getDouble(argv, argv + argc, "-r", 0);
+	char*    policy   = getOption(argv, argv + argc, "-p");
+	bool     show_log = chkOption(argv, argv + argc, "-l");
 
 	BidirectionalGraph g;
 	string line;
-	uint u, v, size_origin, size_sample, size_candidate;
-	set<uint> vertices_ori;
+	uint64_t u, v, size_origin, size_sample, size_candidate;
+	set<uint64_t> vertices_ori;
 
 	while (getline(cin, line)) {
 		SSCANF((line.c_str(), "%u %u", &u, &v));
@@ -102,7 +102,7 @@ int main (int argc, char* argv[]) {
 		vertices_ori.insert(v);
 		if (ratio > 0) {
 			size_origin = vertices_ori.size();
-			size_candidate = (uint)(size_origin * ratio);
+			size_candidate = (uint64_t)(size_origin * ratio);
 			if (size_candidate > size_max) size_max = size_candidate;
 		}
 		size_sample = g.sum_vertices();

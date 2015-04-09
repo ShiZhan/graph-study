@@ -13,7 +13,7 @@
 class Vertex
 {
 public:
-	u64 value;
+	uint64_t value;
 	bool visited;
 	Vertex() { value = -1; visited = false; }
 	~Vertex() {}
@@ -34,36 +34,36 @@ int main (int argc, char* argv[]) {
 		return 0;
 	}
 
-	char* prefix_str = getOption(argv, argv + argc, "-p");
-	u64   source     = getU64(argv, argv + argc, "-s", SOURCE);
+	char*    prefix_str = getOption(argv, argv + argc, "-p");
+	uint64_t source     = getUInt64(argv, argv + argc, "-s", SOURCE);
 
 	string prefix = prefix_str ? prefix_str : PREFIX; // get prefix
 
 	CSR g;
-	u64 vertex_total = g.load(prefix);
+	uint64_t vertex_total = g.load(prefix);
 	if (vertex_total == 0) {
 		cerr << "CSRGraph load error!" << endl;
 		return -1;
 	}
 
-	u64 i, dist;
+	uint64_t i, dist;
 	Vertex* vertices = new Vertex[vertex_total];
 	vertices[source].value = 0;
-	list<u64> traversal(1, source);
-	list<u64>::iterator current;
-	vector<u64> neighbours;
+	list<uint64_t> traversal(1, source);
+	list<uint64_t>::iterator current;
+	vector<uint64_t> neighbours;
 	while(!traversal.empty()) {
 		current = min_element(traversal.begin(), traversal.end(),
-			[=](u64 i, u64 j) { return vertices[i] < vertices[j]; });
+			[=](uint64_t i, uint64_t j) { return vertices[i] < vertices[j]; });
 		i = *current;
 		traversal.erase(current);
 		if (!vertices[i].visited) {
 			dist = vertices[i].value;
 			vertices[i].visited = true;
-			u64 total = g.getNeighbours(i, neighbours);
+			uint64_t total = g.getNeighbours(i, neighbours);
 			if (total) {
-				for (u64 n: neighbours) {
-					u64 newDist = dist + 1; // step over weight-1 edge
+				for (uint64_t n: neighbours) {
+					uint64_t newDist = dist + 1; // step over weight-1 edge
 					if (newDist < vertices[n].value) vertices[n].value = newDist;
 					traversal.push_back(n);
 				}

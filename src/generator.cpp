@@ -23,23 +23,23 @@ int main (int argc, char* argv[]) {
 		return 0;
 	}
 
-	u16   scale      = getInt(argv, argv + argc, "-s", SCALE);
-	u16   degree     = getInt(argv, argv + argc, "-d", D_AVG);
-	char* seed_str   = getOption(argv, argv + argc, "-m");
-	bool  noloop     = chkOption(argv, argv + argc, "-n");
-	bool  undirected = chkOption(argv, argv + argc, "-u");
+	uint16_t scale      = getInt(argv, argv + argc, "-s", SCALE);
+	uint16_t degree     = getInt(argv, argv + argc, "-d", D_AVG);
+	char*    seed_str   = getOption(argv, argv + argc, "-m");
+	bool     noloop     = chkOption(argv, argv + argc, "-n");
+	bool     undirected = chkOption(argv, argv + argc, "-u");
 
 	// get seed matrix (4 ranges)
 	if (seed_str) SSCANF((seed_str, "%u:%u:%u:%u", seed, seed+1, seed+2, seed+3));
 
-	srand((u32)time(NULL));
+	srand((uint32_t)time(NULL));
 
-	u64 E = (1 << scale) * degree / 2;  // 2^scale vertices * degree / 2 edges
+	uint64_t E = (1 << scale) * degree / 2;  // 2^scale vertices * degree / 2 edges
 	int A = seed[0],     B = A + seed[1]; // (0, 0) A | (0, 1) B
 	int C = B + seed[2], D = C + seed[3]; // (1, 0) C | (1, 1) D
-	for (u64 e = 0; e < E; e++) { // generate edge list
-		u64 u = 0, v = 0;
-		for (u16 i = 0; i < scale; i++) {
+	for (uint64_t e = 0; e < E; e++) { // generate edge list
+		uint64_t u = 0, v = 0;
+		for (uint16_t i = 0; i < scale; i++) {
 			int roll = rand() % D;       // [0, D) roll dice
 			u <<= 1; v <<= 1;            // [0, A)
 			if (roll >= C) { u++; v++; } // [C, D)

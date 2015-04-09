@@ -50,8 +50,8 @@ public:
 };
 
 template <class Graph>
-uint get_edges(char* edges_file, Graph& g) {
-	uint u, v, total = 0;
+unsigned int get_edges(char* edges_file, Graph& g) {
+	unsigned int u, v, total = 0;
 	string line;
 	if (edges_file) {
 		ifstream ifs(edges_file);
@@ -74,13 +74,13 @@ uint get_edges(char* edges_file, Graph& g) {
 }
 
 int graph_gen(char* generator, char* parameters) {
-	uint total_vertices = 256, total_edges = 0;
+	unsigned int total_vertices = 256, total_edges = 0;
 	boost::minstd_rand gen;
-	gen.seed((uint)time(NULL));
+	gen.seed((unsigned int)time(NULL));
 
 	if (!generator || !(strcmp(generator, "rmat") && strcmp(generator, "RMAT"))) {
 		typedef rmat_iterator<boost::minstd_rand, adjacency_list<>> rmat_gen;
-		uint scale_v = 8, scale_e = 8;
+		unsigned int scale_v = 8, scale_e = 8;
 		if (parameters) SSCANF((parameters, "%u:%u", &scale_v, &scale_e));
 		total_vertices = 1 << scale_v;
 		total_edges    = total_vertices * scale_e;
@@ -96,7 +96,7 @@ int graph_gen(char* generator, char* parameters) {
 		for (;it != it_last; ++it) cout << it->first << " " << it->second << endl;
 	} else if (!(strcmp(generator, "sw") && strcmp(generator, "SW"))) {
 		typedef small_world_iterator<boost::minstd_rand, adjacency_list<>> sw_gen;
-		uint   knn         = 6;
+		unsigned int   knn         = 6;
 		double probability = 0.03;
 		if (parameters) SSCANF((parameters, "%u:%u:%lf", &total_vertices, &knn, &probability));
 		auto it       = sw_gen(gen, total_vertices, knn, probability);
@@ -105,7 +105,7 @@ int graph_gen(char* generator, char* parameters) {
 	} else if (!(strcmp(generator, "sf") && strcmp(generator, "SF"))) {
 		typedef plod_iterator<boost::minstd_rand, adjacency_list<>> sf_gen;
 		double alpha = 2.7;
-		uint   beta  = 256;
+		unsigned int   beta  = 256;
 		if (parameters) SSCANF((parameters, "%u:%lf:%u", &total_vertices, &alpha, &beta));
 		auto it       = sf_gen(gen, total_vertices, alpha, beta);
 		auto it_last  = sf_gen();
@@ -126,9 +126,9 @@ bool has_self_loop(const Graph& g) {
 
 template <class Graph>
 bool is_dag(const Graph& g) {
-	uint total_vertices = num_vertices(g);
-	vector<uint> component(total_vertices);
-	uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+	unsigned int total_vertices = num_vertices(g);
+	vector<unsigned int> component(total_vertices);
+	unsigned int total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
 	return (total_components == total_vertices) && !has_self_loop(g);
 }
 
@@ -143,7 +143,7 @@ bool is_dag(const Graph& g) {
 //}
 
 template <class Graph>
-int dir_graph_op(Graph& g, char* algorithm, uint v_root) {
+int dir_graph_op(Graph& g, char* algorithm, unsigned int v_root) {
 	if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
 		custom_bfs_visitor b_v;
 		breadth_first_search(g, vertex(v_root, g), visitor(b_v));
@@ -151,24 +151,24 @@ int dir_graph_op(Graph& g, char* algorithm, uint v_root) {
 		custom_dfs_visitor d_v;
 		depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
 	} else if (!(strcmp(algorithm, "scc") && strcmp(algorithm, "SCC"))) {
-		uint total_vertices = num_vertices(g);
-		vector<uint> component(total_vertices);
-		uint total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
-		uint i = 0;
+		unsigned int total_vertices = num_vertices(g);
+		vector<unsigned int> component(total_vertices);
+		unsigned int total_components = strong_components(g, make_iterator_property_map(component.begin(), get(vertex_index, g)));
+		unsigned int i = 0;
 		for (auto c: component) cout << i++ << " " << c << endl;
 	} else if (!(strcmp(algorithm, "ts") && strcmp(algorithm, "TS"))) {
 		if (is_dag(g)) {
-			deque<uint> topological_order;
+			deque<unsigned int> topological_order;
 			topological_sort(g, front_inserter(topological_order));
 			for (auto o: topological_order) cout << o << endl;
 		} else cout << "not DAG" << endl;
 	//} else if(!(strcmp(algorithm, "mdo") && strcmp(algorithm, "MDO"))) {
 	//	if(isSymmetric(g)) {
-	//		uint n = num_vertices(g);
+	//		unsigned int n = num_vertices(g);
 	//		vector<int> degree(n, 0);
 	//		vector<int> supernode_sizes(n, 1);
 	//		vector<int> inv_perm(n, 0);//build_permutation(InversePermutationMap next,PermutationMap prev)(minimum_degree_ordering.hpp)
-	//		vector<int> perm(n, 0); //prev[i] and next[i] can be negative,so vector inv_perm and perm shouldn't be uint 
+	//		vector<int> perm(n, 0); //prev[i] and next[i] can be negative,so vector inv_perm and perm shouldn't be unsigned int 
 	//		minimum_degree_ordering(g,
 	//			make_iterator_property_map(&degree[0], get(vertex_index,g), degree[0]),
 	//			&inv_perm[0],
@@ -184,7 +184,7 @@ int dir_graph_op(Graph& g, char* algorithm, uint v_root) {
 }
 
 template <class Graph>
-int undir_graph_op(Graph& g, char* algorithm, uint v_root) {
+int undir_graph_op(Graph& g, char* algorithm, unsigned int v_root) {
 	if (!(strcmp(algorithm, "bfs") && strcmp(algorithm, "BFS"))) {
 		custom_bfs_visitor b_v;
 		breadth_first_search(g, vertex(v_root, g), visitor(b_v));
@@ -192,15 +192,15 @@ int undir_graph_op(Graph& g, char* algorithm, uint v_root) {
 		custom_dfs_visitor d_v;
 		depth_first_search(g, root_vertex(vertex(v_root, g)).visitor(d_v));
 	} else if (!(strcmp(algorithm, "cmo") && strcmp(algorithm, "CMO"))) {
-		vector<uint> cuthill_mckee_order(num_vertices(g));
+		vector<unsigned int> cuthill_mckee_order(num_vertices(g));
 		cuthill_mckee_ordering(g, cuthill_mckee_order.rbegin()); 
 		for (auto cmo: cuthill_mckee_order) cout << cmo << endl;
 	} else if (!(strcmp(algorithm, "ko") && strcmp(algorithm, "KO"))) {
-		vector<uint> king_order(num_vertices(g));
+		vector<unsigned int> king_order(num_vertices(g));
 		king_ordering(g, king_order.rbegin());
 		for (auto ko: king_order) cout << ko << endl;
 	} else if(!(strcmp(algorithm, "so") && strcmp(algorithm, "SO"))) {
-		vector<uint> sloan_order(num_vertices(g));
+		vector<unsigned int> sloan_order(num_vertices(g));
 		sloan_ordering(g, sloan_order.begin(), get(vertex_color, g), make_degree_map(g), get(vertex_priority, g));
 		for (auto so: sloan_order) cout << so <<endl;
 	} else {
@@ -259,7 +259,7 @@ int main(int argc, char* argv[]) {
 	char* gen_param  = getOption(argv, argv + argc, "-p");
 	char* edges_file = getOption(argv, argv + argc, "-i");
 	char* algorithm  = getOption(argv, argv + argc, "-e");
-	uint  v_root     = getInt(argv, argv + argc, "-s", 0);
+	unsigned int  v_root     = getInt(argv, argv + argc, "-s", 0);
 
 	typedef adjacency_list<setS, vecS,   directedS, no_property> graph_t;
 	typedef property<vertex_color_t, default_color_type, property<vertex_degree_t, int, property<vertex_priority_t, double> > > vertex_p;
