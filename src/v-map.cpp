@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <stdint.h>
 #include "options.h"
 #include "utils.h"
 
@@ -14,11 +15,11 @@ V getOrElse(const std::map<K, V>& m, const K k, const V d) {
 		return itr->second;
 }
 
-typedef std::map<uint, uint> v_map_t;
+typedef std::map<int64_t, int64_t> v_map_t;
 void map_print(const char* line, const v_map_t& v_map) {
-	uint u, v;
-	SSCANF((line, "%u %u", &u, &v));
-	printf("%u %u\n", getOrElse(v_map, u, u), getOrElse(v_map, v, v));
+	int64_t u, v;
+	SSCANF((line, "%llu %llu", &u, &v));
+	std::cout << getOrElse(v_map, u, u) << " " << getOrElse(v_map, v, v) << std::endl;
 }
 
 int main (int argc, char* argv[]) {
