@@ -35,7 +35,7 @@ namespace opt {
 		char* str = getOption(begin, end, option);
 		if (str) {
 			try {
-				SSCANF((str, "%llu", &value));
+				SSCANF((str, "%lu", &value));
 			} catch(std::exception& e) {
 				std::cerr << e.what() << std::endl;
 			}
