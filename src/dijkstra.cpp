@@ -1,24 +1,25 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
+#include <sstream> // for parsing edge list file
 #include <string>
 #include <map>
 #include <set>
 #include <vector>
 #include <queue> // To set up priority queue
 #include <functional> // To use std::greater<T> -> This will prove to be useful in picking the minimum weight
-#include <climits>
+#include <algorithm> // To use reverse
+#include <climits> // defines INT_MAX
 
 using namespace std;
 
 typedef pair<int, int> Pair; // First = Weight & Second = Vertex
-typedef map<int, vector<Pair>> AdjList;
+typedef map<int, vector<Pair>> AdjList; // Vertex ID as key, outgoing edges in vector as value
 
-void createAndAddEdge(AdjList &adjList, int u, int weight, int v) {
+void createAndAddEdge(AdjList &adjList, int u, int weight, int v) { // add edges manually
     adjList[u].push_back(make_pair(weight, v));
 }
 
-void loadEdgeList(const char *edge_file, AdjList &adjList) {
+void loadEdgeList(const string edge_file, bool directed, AdjList &adjList) { // add edges from text file
     ifstream edge_fs(edge_file);
     if(edge_fs) {
         string line;
@@ -28,22 +29,31 @@ void loadEdgeList(const char *edge_file, AdjList &adjList) {
             ss >> u;
             ss >> v;
             adjList[u].push_back(make_pair(weight, v));
+            if(directed) {
+                auto itr = adjList.find(v);
+                if (itr == adjList.end())
+                    adjList[v] = vector<Pair>();
+            }
+            else
+                adjList[v].push_back(make_pair(weight, u));
         }
         edge_fs.close();
     }
 }
 
-void DijkstrasAlgorithm(AdjList adjList, int source, map<int, int> &ShortestPath) {
+void DijkstrasAlgorithm(AdjList adjList, int source, map<int, int> &predecessor, map<int, int> &shortestPath) {
     priority_queue<Pair, vector<Pair>, greater<Pair> > PQ; // Set up priority queue
     Pair info;
     int weight;
     set<int> visited;
 
-    ShortestPath[source] = 0; // Set source distance to zero
+    shortestPath[source] = 0; // Set source distance to zero
     int numVertices = adjList.size();
-    for (auto v: adjList)
+    for (auto v: adjList) {
+        predecessor[v.first] = INT_MAX; // initialize all predessor to +infinity
         if (v.first != source)
-            ShortestPath[v.first] = INT_MAX; // Initialize everything else to +infinity
+            shortestPath[v.first] = INT_MAX; // Initialize everything else to +infinity
+    }
 
     PQ.push(make_pair(0, source)); // Source has weight 0;
 
@@ -59,34 +69,44 @@ void DijkstrasAlgorithm(AdjList adjList, int source, map<int, int> &ShortestPath
         visited.insert(source); // Else, mark the vertex so that we won't have to visit it again
 
         for (vector<Pair>::iterator it = adjList[source].begin(); it != adjList[source].end(); it++)
-             if ((weight + (it->first)) < ShortestPath[it->second]) { // Check if we can do better
-                 ShortestPath[it->second] = weight + (it->first); // Update new distance
-                 PQ.push(make_pair(ShortestPath[it->second], it->second)); // Push vertex and weight onto Priority Queue
-             } // Update distance
+            if ((weight + (it->first)) < shortestPath[it->second]) { // Check if we can do better
+                shortestPath[it->second] = weight + (it->first); // Update new distance
+                predecessor[it->second] = source; // Update new predecessor
+                PQ.push(make_pair(shortestPath[it->second], it->second)); // Push vertex and weight onto Priority Queue
+            } // Update distance
     } // While Priority Queue is not empty
 } // DijkstrasAlgorithm
 
-int main(void) {
-
-    int source = 0;
-    AdjList adjList;
-    map<int, int> ShortestPath;
-
-    // createAndAddEdge(adjList, 0, 5, 1);
-    // createAndAddEdge(adjList, 0, 10, 3);
-    // createAndAddEdge(adjList, 1, 2, 2);
-    // createAndAddEdge(adjList, 1, 10, 5);
-    // createAndAddEdge(adjList, 1, 5, 4);
-    // createAndAddEdge(adjList, 2, 1, 3);
-    // createAndAddEdge(adjList, 2, 5, 4);
-    // createAndAddEdge(adjList, 2, 3, 0);
-    // createAndAddEdge(adjList, 4, 2, 5);
-    loadEdgeList("c:/Users/zhans/Documents/cs-service/sample-data/rmat-10-8.txt", adjList);
-
-    DijkstrasAlgorithm(adjList, source, ShortestPath);
-
-    cout << "Shortest path from source vertex " << source << ": /n";
-    for (auto target: ShortestPath) {
-        cout << target.first << " " << target.second << endl;
+void FindPath(int source, int target, map<int, int> predecessor, vector<int> &path) {
+    int v = target;
+    while (v != source) {
+        path.push_back(v);
+        v = predecessor[v];
     }
+    path.push_back(v);
+    reverse(path.begin(), path.end());
+}
+
+int main(int argc, char* argv[]) {
+    string edge_file = "c:/Users/zhans/Documents/cs-service/sample-data/rmat-10-8.txt";
+    int source = 0, target = 938;
+    AdjList adjList;
+    map<int, int> predecessor;
+    map<int, int> shortestPath;
+    vector<int> path;
+
+    loadEdgeList(edge_file, true, adjList);
+
+    DijkstrasAlgorithm(adjList, source, predecessor, shortestPath);
+
+    FindPath(source, target, predecessor, path);
+
+    cout << "Shortest path from source vertex " << source << ":\n";
+    for (auto target: shortestPath)
+        cout << target.first << " " << target.second << endl;
+
+    cout << "Path to vertex " << target << ": ";
+    for (auto v: path)
+        cout << v << " ";
+    cout << endl;
 }
