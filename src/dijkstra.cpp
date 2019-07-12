@@ -90,6 +90,11 @@ void FindPath(int source, int target, map<int, int> predecessor, vector<int> &pa
 int main(int argc, char* argv[]) {
     string edge_file = "c:/Users/zhans/Documents/cs-service/sample-data/rmat-10-8.txt";
     int source = 0, target = 938;
+    if (argc > 3) {
+        edge_file = argv[1];
+        sscanf(argv[2], "%d", &source);
+        sscanf(argv[3], "%d", &target);
+    }
     AdjList adjList;
     map<int, int> predecessor;
     map<int, int> shortestPath;
